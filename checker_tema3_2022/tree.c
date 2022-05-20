@@ -19,20 +19,19 @@ static TreeNode* createTreeNode(char* treeNodeName) {
 }
 
 /* Creates a FileContent with content `fileContent`. */
-FileContent* createFileContent(char* fileContent) {
+static FileContent* createFileContent(char* fileContent) {
     FileContent* file = malloc(sizeof(*file));
 	file->text = strdup(fileContent);
 	return file;
 }
 
 /* Creates a FolderContent with content `folderContent`. */
-FolderContent* createFolderContent() {
+static FolderContent* createFolderContent() {
     FolderContent* folder = malloc(sizeof(*folder));
-	folder->children = list_create();
+	folder->children = createList();
 	return folder;
 }
 
-/* Creates a FileTree with root `rootFolderName`. */
 FileTree createFileTree(char* rootFolderName) {
     FileTree fileTree;
 	fileTree.root = createTreeNode(rootFolderName);
@@ -43,27 +42,33 @@ FileTree createFileTree(char* rootFolderName) {
 }
 
 /* Frees the memory allocated for a file. */
-static void freeFileContent(void* fileContent) {
-
+static void freeFileContent(FileContent* fileContent) {
+	free(((FileContent*) fileContent)->text);
+	free(fileContent);
 }
 
-/* Frees the memory allocated for a directory. */
-static void freeFolderContent(void* folderContent) {
-
+/* Empties a directory. */
+static void emptyFolderContent(FolderContent* folderContent) {
+	emptyList(folderContent->children);
 }
 
-/* Frees the memory allocated for a TreeNode. */
-static void freeTreeNode(TreeNode* treeNode) {
+/* Frees an empty directory. */
+static void freeFolderContent(FolderContent* folderContent) {
+	freeList(folderContent->children);
+	free(folderContent);
+}
+
+void freeTreeNode(TreeNode* treeNode) {
 	free(treeNode->name);
 	if (treeNode->type == FILE_NODE) {
-		freeFileContent(treeNode->content);
+		freeFileContent((FileContent*) treeNode->content);
 	} else {
-		freeFolderContent(treeNode->content);
+		emptyFolderContent((FolderContent*) treeNode->content);
+		freeFolderContent((FolderContent*) treeNode->content);
 	}
 	free(treeNode);
 }
 
-/* Frees the memory allocated for a FileTree. */
 void freeTree(FileTree fileTree) {
 	freeTreeNode(fileTree.root);
 }

@@ -16,7 +16,7 @@ int main()
 
 	TreeNode* currentFolder = fileTree.root;
 
-	printf("----------TEST touch 1----------\n");
+	printf("----------TEST touch----------\n");
 	printf("***TEST TOUCH EMPTY FILE***\n");
 	touch(currentFolder, strdup("a"), 0);
 	// check if the name of the added file is "a"
@@ -33,12 +33,32 @@ int main()
 	currentElement = currentElement->next;
 	check_added_name = strcmp(currentElement->info->name, "b");
 	assert(check_added_name == 0);
+	// check the content of the file
+	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
+	assert(check_added_name == 0);
 	// check if the file added is the last element
+	assert(currentElement->next == NULL);
+
+	printf("***TEST TOUCH DUPLICATE FILE WITHOUT CONTENT***\n");
+	touch(currentFolder, strdup("b"), 0);
+	// check if the content of the file did not change
+	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
+	assert(check_added_name == 0);
+	// check if no file was added
+	assert(currentElement->next == NULL);
+
+	printf("***TEST TOUCH DUPLICATE FILE WITH CONTENT***\n");
+	touch(currentFolder, strdup("b"), strdup("content_b_new"));
+	// check if the content of the file did not change
+	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
+	assert(check_added_name == 0);
+	// check if no file was added
 	assert(currentElement->next == NULL);
 
 	printf("\n");
 
-	printf("----------TEST mkdir 1----------\n");
+
+	printf("----------TEST mkdir----------\n");
 	printf("***TEST ADD NEW DIRECTORY***\n");
 	mkdir(currentFolder, strdup("A"));
 	// check if the name of the added directory is "A"
@@ -49,21 +69,56 @@ int main()
 	assert(currentElement->next == NULL);
 
 	printf("***TEST ADD EXISTING DIRECTORY***\n");
-	printf("Should print:\nmkdir: cannot create directory ‘<dirname>’: File exists\n");
+	printf("Should print:\nmkdir: cannot create directory ‘A’: File exists\n");
 	printf("Prints:\n");
 	mkdir(currentFolder, strdup("A"));
 	// check if no element was added
 	assert(currentElement->next == NULL);
 
+	printf("***TEST CHECK EXISTING CONTENTS***\n");
+	currentElement = folderContents->head;
+	// the first element should be file "a"
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// the second element should be file "b"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "b");
+	assert(check_added_name == 0);
+	// the third element should be directory "A"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// check if directory "A" is the last element
+	assert(currentElement->next == NULL);
+
 	printf("\n");
 
-	printf("----------TEST touch 2----------\n");
-	printf("***TEST TOUCH***\n");
-
-	printf("\n");
 
 	printf("----------TEST ls----------\n");
+	printf("***TEST EMPTY FILE***\n");
+	printf("Should print:\na: \n");
+	printf("Prints:\n");
+	ls(currentFolder, "a");
+
+	printf("***TEST NON-EMPTY FILE***\n");
+	printf("Should print:\nb: content_b\n");
+	printf("Prints:\n");
+	ls(currentFolder, "b");
+
 	printf("***TEST EMPTY DIRECTORY***\n");
+	printf("Should print:\n \n"); // CHECK TESTS TO SEE WHAT SHOULD BE PRINTED
+	printf("Prints:\n");
+	ls(currentFolder, "A");
+
+	printf("***TEST NON-EMPTY, CURRENT DIRECTORY***\n");
+	printf("Should print:\na\nb\nA\n");
+	printf("Prints:\n");
+	ls(currentFolder, 0);
+
+	printf("***TEST INVALID ARGUMENT***\n");
+	printf("Should print:\nls: cannot access 'c': No such file or directory\n");
+	printf("Prints:\n");
+	ls(currentFolder, "c");
 
 	printf("\n");
 

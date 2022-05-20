@@ -6,6 +6,9 @@
 #include <string.h>
 #include "tree.h"
 
+typedef struct ListNode ListNode;
+typedef struct List List;
+
 struct ListNode {
     TreeNode* info;
     ListNode* next;
@@ -15,6 +18,16 @@ struct List {
     ListNode* head;
 };
 
-List* list_create();
+/* Creates a list. */
+List* createList();
+
+/* Frees an empty list. */
+void freeList(List* list);
+
+/* Frees a list node. */
+void freeListNode(ListNode* listNode);
+
+/* Empties a list. */
+void emptyList(List* list);
 
 #endif  // LIST_H

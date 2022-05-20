@@ -16,6 +16,10 @@ int main()
 	printf("----------TEST CREATE----------\n");
 	fileTree = createFileTree(strdup("root"));
 	assert(fileTree.root != NULL); // check if root was created
+	assert(fileTree.root->content != NULL); // check if root content was created
+	// check if root folder content list was created
+	assert(((FolderContent*) fileTree.root->content)->children != NULL);
+	assert(fileTree.root->type == FOLDER_NODE); // check if root is a directory
 
 	printf("\n");
 

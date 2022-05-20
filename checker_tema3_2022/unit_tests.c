@@ -3,10 +3,15 @@
 #include <string.h>
 #include <assert.h>
 #include "tree.h"
+#include "list.h"
+
+#define TREE_CMD_INDENT_SIZE 4
+#define NO_ARG ""
+#define PARENT_DIR ".."
 
 int main()
 {
-	struct FileTree fileTree;
+	FileTree fileTree;
 
 	printf("----------TEST CREATE----------\n");
 	fileTree = createFileTree(strdup("root"));
@@ -121,6 +126,44 @@ int main()
 	ls(currentFolder, "c");
 
 	printf("\n");
+
+
+	printf("----------TEST cd----------\n");
+	// TODO
+	printf("***TEST ADD NEW DIRECTORY***\n");
+	mkdir(currentFolder, strdup("A"));
+	// check if the name of the added directory is "A"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// check if the added directory is the last element
+	assert(currentElement->next == NULL);
+
+	printf("***TEST ADD EXISTING DIRECTORY***\n");
+	printf("Should print:\nmkdir: cannot create directory ‘A’: File exists\n");
+	printf("Prints:\n");
+	mkdir(currentFolder, strdup("A"));
+	// check if no element was added
+	assert(currentElement->next == NULL);
+
+	printf("***TEST CHECK EXISTING CONTENTS***\n");
+	currentElement = folderContents->head;
+	// the first element should be file "a"
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// the second element should be file "b"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "b");
+	assert(check_added_name == 0);
+	// the third element should be directory "A"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// check if directory "A" is the last element
+	assert(currentElement->next == NULL);
+
+	printf("\n");
+
 
 	freeTree(fileTree);
 

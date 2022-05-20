@@ -1,3 +1,6 @@
+#ifndef TREE_H
+#define TREE_H
+
 #define TREE_CMD_INDENT_SIZE 4
 #define NO_ARG ""
 #define PARENT_DIR ".."
@@ -33,14 +36,14 @@ struct FileTree {
     TreeNode* root;
 };
 
-struct ListNode {
-    TreeNode* info;
-    ListNode* next;
-};
+// struct ListNode {
+//     TreeNode* info;
+//     ListNode* next;
+// };
 
-struct List {
-    ListNode* head;
-};
+// struct List {
+//     ListNode* head;
+// };
 
 
 void ls(TreeNode* currentNode, char* arg);
@@ -56,3 +59,5 @@ void cp(TreeNode* currentNode, char* source, char* destination);
 void mv(TreeNode* currentNode, char* source, char* destination);
 FileTree createFileTree();
 void freeTree(FileTree fileTree);
+
+#endif  // TREE_H

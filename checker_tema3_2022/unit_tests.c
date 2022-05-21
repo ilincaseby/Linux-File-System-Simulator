@@ -42,22 +42,26 @@ int main()
 	printf("***TEST TOUCH FILE WITH CONTENT***\n");
 	touch(currentFolder, strdup("b"), strdup("content_b"));
 	// check if the name of the added file is "b"
-	currentElement = currentElement->next;
+	currentElement = folderContents->head;
 	check_added_name = strcmp(currentElement->info->name, "b");
 	assert(check_added_name == 0);
 	// check the content of the file
 	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
 	assert(check_added_name == 0);
-	// check if the file added is the last element
-	assert(currentElement->next == NULL);
+	// check if the next file is a
+	currentElement = currentElement->next;
+	assert(currentElement != NULL);
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
 
 	printf("***TEST TOUCH DUPLICATE FILE WITHOUT CONTENT***\n");
 	touch(currentFolder, strdup("b"), NO_ARG);
 	// check if the content of the file did not change
+	currentElement = folderContents->head;
 	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
 	assert(check_added_name == 0);
 	// check if no file was added
-	assert(currentElement->next == NULL);
+	assert(currentElement->next->next == NULL);
 
 	printf("***TEST TOUCH DUPLICATE FILE WITH CONTENT***\n");
 	touch(currentFolder, strdup("b"), strdup("content_b_new"));
@@ -65,7 +69,7 @@ int main()
 	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
 	assert(check_added_name == 0);
 	// check if no file was added
-	assert(currentElement->next == NULL);
+	assert(currentElement->next->next == NULL);
 
 	printf("\n");
 
@@ -122,13 +126,13 @@ int main()
 	printf("Prints:\n");
 	ls(currentFolder, "b");
 
-	// printf("***TEST EMPTY DIRECTORY***\n");
-	// printf("Should print:\n \n"); // CHECK TESTS TO SEE WHAT SHOULD BE PRINTED
-	// printf("Prints:\n");
-	// ls(currentFolder, "A");
+	// // printf("***TEST EMPTY DIRECTORY***\n");
+	// // printf("Should print:\n \n"); // CHECK TESTS TO SEE WHAT SHOULD BE PRINTED
+	// // printf("Prints:\n");
+	// // ls(currentFolder, "A");
 
 	printf("***TEST NON-EMPTY, CURRENT DIRECTORY***\n");
-	printf("Should print:\na\nb\n");
+	printf("Should print:\nb\na\n");
 	printf("Prints:\n");
 	ls(currentFolder, NO_ARG);
 

@@ -11,6 +11,8 @@
 									free(content); \
 								}})
 #define NO_ARGUMENT (!strcmp(arg, NO_ARG))
+#define CD_ERROR ("cd: no such file or directory:")
+#define TREE_ERROR ("[error opening dir]\n")
 
 TreeNode* createTreeNode(char* treeNodeName) {
 	TreeNode* treeNode = malloc(sizeof(*treeNode));
@@ -138,7 +140,7 @@ void mkdir(TreeNode* currentNode, char* folderName) {
 	return;
 }
 
-TreeNode* cd(TreeNode* currentNode, char* path) {
+static TreeNode* get_to_path(TreeNode* currentNode, char* path, char* print_arg1, char* print_arg2) {
 	char* path_copy = strdup(path);
 	char* new_dir_name = strtok(path_copy, "/");
 	while (new_dir_name != NULL) {
@@ -153,16 +155,14 @@ TreeNode* cd(TreeNode* currentNode, char* path) {
 		ListNode* node = list_find_node(contentsList, new_dir_name);
 		// check if path exists
 		if (!node) {
-			printf("cd: no such file or directory: %s\n", path);
-			free(path_copy);
-			return currentNode;
+			printf("%s %s\n", print_arg1, print_arg2);
+			break;
 		}
 
 		// path exists but is a file
 		if (node->info->type == FILE_NODE) {
-			printf("cd: no such file or directory: %s\n", path);
-			free(path_copy);
-			return currentNode;
+			printf("%s %s\n", print_arg1, print_arg2);
+			break;
 		}
 		// path exists and is a directory
 		currentNode = node->info;
@@ -173,14 +173,22 @@ TreeNode* cd(TreeNode* currentNode, char* path) {
 	return currentNode;
 }
 
+TreeNode* cd(TreeNode* currentNode, char* path) {
+	return get_to_path(currentNode, path, CD_ERROR, path);
+}
+
+void tree(TreeNode* currentNode, char* arg) {
+    int dir_no = 0, file_no = 0;
+	char cmd[5] = "tree";
+	TreeNode* dir = get_to_path(currentNode, arg, arg, TREE_ERROR);
+
+	printf("%d directories, %d files\n", dir_no, file_no);
+}
+
 void pwd(TreeNode* treeNode) {
     // TODO
 }
 
-
-void tree(TreeNode* currentNode, char* arg) {
-    // TODO
-}
 
 void rmrec(TreeNode* currentNode, char* resourceName) {
     // TODO

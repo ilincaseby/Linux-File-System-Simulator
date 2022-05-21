@@ -140,6 +140,7 @@ void mkdir(TreeNode* currentNode, char* folderName) {
 	return;
 }
 
+/* Returns the path given by the argument `path`. */
 static TreeNode* get_to_path(TreeNode* currentNode, char* path, char* print_arg1, char* print_arg2) {
 	char* path_copy = strdup(path);
 	char* new_dir_name = strtok(path_copy, "/");
@@ -156,12 +157,14 @@ static TreeNode* get_to_path(TreeNode* currentNode, char* path, char* print_arg1
 		// check if path exists
 		if (!node) {
 			printf("%s %s\n", print_arg1, print_arg2);
+			currentNode = NULL;
 			break;
 		}
 
 		// path exists but is a file
 		if (node->info->type == FILE_NODE) {
 			printf("%s %s\n", print_arg1, print_arg2);
+			currentNode = NULL;
 			break;
 		}
 		// path exists and is a directory
@@ -174,14 +177,43 @@ static TreeNode* get_to_path(TreeNode* currentNode, char* path, char* print_arg1
 }
 
 TreeNode* cd(TreeNode* currentNode, char* path) {
-	return get_to_path(currentNode, path, CD_ERROR, path);
+	// the `get_to_path` function also checks exception cases
+	TreeNode* dir = get_to_path(currentNode, path, CD_ERROR, path);
+	// if the path is not valid make no change
+	if (!dir) {
+		return currentNode;
+	}
+	return dir;
+}
+
+/* Prints the contents of the current directory indented by level. */
+static void
+printTreeLevels(TreeNode* currentNode, int level, int* dir_no, int* file_no) {
+	List* contentsList = ((FolderContent*) currentNode->content)->children;
+	ListNode* curr = contentsList->head;
+	while (curr) {
+		// print the current resource
+		printf("%*s%s\n", level * TREE_CMD_INDENT_SIZE, "", curr->info->name);
+		// if the resource is a directory, recursively print the contents
+		if (curr->info->type == FOLDER_NODE) {
+			(*dir_no)++;
+			printTreeLevels(curr->info, level + 1, dir_no, file_no);
+		} else {
+			(*file_no)++;
+		}
+		curr = curr->next;
+	}
 }
 
 void tree(TreeNode* currentNode, char* arg) {
     int dir_no = 0, file_no = 0;
 	char cmd[5] = "tree";
+	// the `get_to_path` function also checks exception cases
 	TreeNode* dir = get_to_path(currentNode, arg, arg, TREE_ERROR);
-
+	// check if the path is valid
+	if (dir) {
+		printTreeLevels(dir, 0, &dir_no, &file_no);
+	}
 	printf("%d directories, %d files\n", dir_no, file_no);
 }
 

@@ -11,16 +11,14 @@ List* createList() {
 	return list;
 }
 
-/* Frees the memory allocated for a node of the list. */
-void freeListNode(ListNode* listNode) {
-	freeTreeNode(listNode->info);
-	free(listNode);
-}
-
-/* Frees the memory allocated for an empty list. */
 void freeList(List* list) {
 	assert(!list->head); // check if the list is empty
 	free(list);
+}
+
+void freeListNode(ListNode* listNode) {
+	freeTreeNode(listNode->info);
+	free(listNode);
 }
 
 ListNode*

@@ -31,7 +31,7 @@ void freeListNode(ListNode* listNode);
 void printList(List* list);
 
 /* Adds a new element at the end of the list. */
-void
+ListNode*
 list_add_first(List* list, enum TreeNodeType type, char* name, void* content);
 
 /* Finds the node with name `name` inside the list. */

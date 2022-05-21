@@ -161,101 +161,97 @@ int main()
 	printf("\n");
 
 
-	// printf("----------TEST cd----------\n");
-	// printf("***TEST CHANGE TO LEVEL 1 PATH***\n");
-	// currentFolder = cd(currentFolder, "A");
-	// // check if the current directory is "A"
-	// assert(strcmp(currentFolder->name, "A") == 0);
-	// // // check if "A" is empty
-	// // assert(currentFolder->content == NULL);
+	printf("----------TEST cd----------\n");
+	printf("***TEST CHANGE TO LEVEL 1 PATH***\n");
+	currentFolder = cd(currentFolder, "A");
+	// check if the current directory is "A"
+	assert(strcmp(currentFolder->name, "A") == 0);
+	// // check if "A" is empty
+	// assert(currentFolder->content == NULL);
 
-	// printf("***TEST CHANGE TO PARENT PATH***\n");
-	// // current directory is A
-	// currentFolder = cd(currentFolder, "..");
-	// // check if the current directory is "root"
-	// assert(strcmp(currentFolder->name, "root") == 0);
-	// // test existing contents of "root"
-	// currentElement = folderContents->head;
-	// // the first element should be directory "A"
-	// check_added_name = strcmp(currentElement->info->name, "A");
-	// assert(check_added_name == 0);
-	// // the second element should be file "b"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "b");
-	// assert(check_added_name == 0);
-	// // the third element should be file "a"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "a");
-	// assert(check_added_name == 0);
-	// // check if file "a" is the last element
-	// assert(currentElement->next == NULL);
+	printf("***TEST CHANGE TO PARENT PATH***\n");
+	// current directory is A
+	currentFolder = cd(currentFolder, "..");
+	// check if the current directory is "root"
+	assert(strcmp(currentFolder->name, "root") == 0);
+	// test existing contents of "root"
+	currentElement = folderContents->head;
+	// the first element should be directory "A"
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// the second element should be file "b"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "b");
+	assert(check_added_name == 0);
+	// the third element should be file "a"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// check if file "a" is the last element
+	assert(currentElement->next == NULL);
 
-	// printf("***TEST CHANGE TO COMPOSITE PATH***\n");
-	// currentFolder = cd(currentFolder, "A/..");
-	// // check if the current directory is "root"
-	// assert(strcmp(currentFolder->name, "root") == 0);
-	// // test existing contents of "root"
-	// currentElement = folderContents->head;
-	// // the first element should be directory "A"
-	// check_added_name = strcmp(currentElement->info->name, "A");
-	// assert(check_added_name == 0);
-	// // the second element should be file "b"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "b");
-	// assert(check_added_name == 0);
-	// // the third element should be file "a"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "a");
-	// assert(check_added_name == 0);
-	// // check if file "a" is the last element
-	// assert(currentElement->next == NULL);
+	printf("***TEST CHANGE TO COMPOSITE PATH***\n");
+	currentFolder = cd(currentFolder, "A/..");
+	// check if the current directory is "root"
+	assert(strcmp(currentFolder->name, "root") == 0);
+	// test existing contents of "root"
+	currentElement = folderContents->head;
+	// the first element should be directory "A"
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// the second element should be file "b"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "b");
+	assert(check_added_name == 0);
+	// the third element should be file "a"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// check if file "a" is the last element
+	assert(currentElement->next == NULL);
 
-	// printf("***TEST CHANGE TO INVALID PATH 1 (unexistend directory)***\n");
-	// printf("Should print:\ncd: no such file or directory: B\n");
-	// printf("Prints:\n");
-	// currentFolder = cd(currentFolder, "B");
+	printf("***TEST CHANGE TO INVALID PATH 1 (unexistend directory)***\n");
+	printf("Should print:\ncd: no such file or directory: B\n");
+	printf("Prints:\n");
+	currentFolder = cd(currentFolder, "B");
 
-	// printf("***TEST CHANGE TO INVALID PATH 2 (file)***\n");
-	// printf("Should print:\ncd: no such file or directory: b\n");
-	// printf("Prints:\n");
-	// currentFolder = cd(currentFolder, "b");
+	printf("***TEST CHANGE TO INVALID PATH 2 (file)***\n");
+	printf("Should print:\ncd: no such file or directory: b\n");
+	printf("Prints:\n");
+	currentFolder = cd(currentFolder, "b");
 
-	// printf("\n");
+	printf("\n");
 
 
-	// printf("----------TEST tree----------\n");
-	// // add a file and a directory to directory "A"
-	// currentFolder = cd(currentFolder, "A");
-	// touch(currentFolder, strdup("c"), 0);
-	// mkdir(currentFolder, strdup("B"));
-	// // go back to root
-	// currentFolder = cd(currentFolder, "..");
-	// printf("***TEST CURRENT PATH (root)***\n");
-	// printf("Should print:\nA\n    B\n    C\nb\na\n2 directories, 3 files\n");
-	// printf("Prints:\n");
-	// tree(currentFolder, NO_ARG);
+	printf("----------TEST tree----------\n");
+	currentFolder = fileTree.root;
+	printf("***TEST CURRENT PATH (root)***\n");
+	printf("Should print:\nA\n    file\n    C\nb\na\n2 directories, 3 files\n");
+	printf("Prints:\n");
+	tree(currentFolder, NO_ARG);
 
-	// printf("***TEST LEVEL 1 PATH***\n");
-	// printf("Should print:\nB\nc\n1 directories, 1 files\n");
-	// printf("Prints:\n");
-	// tree(currentFolder, "A");
+	printf("***TEST LEVEL 1 PATH***\n");
+	printf("Should print:\nfile\nC\n1 directories, 1 files\n");
+	printf("Prints:\n");
+	tree(currentFolder, "A");
 
-	// printf("***TEST LEVEL 2 PATH WITH EMPTY CONTENT***\n");
-	// printf("Should print:\n0 directories, 0 files\n");
-	// printf("Prints:\n");
-	// tree(currentFolder, "A/B");
+	printf("***TEST LEVEL 2 PATH WITH EMPTY CONTENT***\n");
+	printf("Should print:\n0 directories, 0 files\n");
+	printf("Prints:\n");
+	tree(currentFolder, "A/C");
 
-	// printf("***TEST INVALID PATH 1 (unexistent directory)***\n");
-	// printf("Should print:\nC [error opening dir]\n\n0 directories, 0 files\n");
-	// printf("Prints:\n");
-	// tree(currentFolder, "C");
+	printf("***TEST INVALID PATH 1 (unexistent directory)***\n");
+	printf("Should print:\nB [error opening dir]\n\n0 directories, 0 files\n");
+	printf("Prints:\n");
+	tree(currentFolder, "B");
 
-	// printf("***TEST INVALID PATH 2 (file)***\n");
-	// printf("Should print:\na [error opening dir]\n\n0 directories, 0 files\n");
-	// printf("Prints:\n");
-	// tree(currentFolder, "a");
+	printf("***TEST INVALID PATH 2 (file)***\n");
+	currentFolder = fileTree.root;
+	printf("Should print:\na [error opening dir]\n\n0 directories, 0 files\n");
+	printf("Prints:\n");
+	tree(currentFolder, "a");
 
-	// printf("\n");
+	printf("\n");
 
 
 	// printf("----------TEST pwd----------\n");

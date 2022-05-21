@@ -27,7 +27,14 @@ void freeList(List* list);
 /* Frees a list node. */
 void freeListNode(ListNode* listNode);
 
-/* Empties a list. */
+/* Adds a new element at the end of the list. */
+ListNode*
+list_add_last(List* list, enum TreeNodeType type, char* name, void* content);
+
+/* Finds the node with name `name` inside the list. */
+ListNode* list_find_node(List* list, char* name);
+
+/* Removes all the elements of a list. */
 void emptyList(List* list);
 
 #endif  // LIST_H

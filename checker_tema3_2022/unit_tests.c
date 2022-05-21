@@ -74,40 +74,40 @@ int main()
 	printf("\n");
 
 
-	// printf("----------TEST mkdir----------\n");
-	// printf("***TEST ADD NEW DIRECTORY***\n");
-	// mkdir(currentFolder, strdup("A"));
-	// // check if the name of the added directory is "A"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "A");
-	// assert(check_added_name == 0);
-	// // check if the added directory is the last element
-	// assert(currentElement->next == NULL);
+	printf("----------TEST mkdir----------\n");
+	printf("***TEST ADD NEW DIRECTORY***\n");
+	mkdir(currentFolder, strdup("A"));
+	// check if the name of the added directory is "A"
+	currentElement = folderContents->head;
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// check if the added directory is the last element
+	assert(currentElement->next->next->next == NULL);
 
-	// printf("***TEST ADD EXISTING DIRECTORY***\n");
-	// printf("Should print:\nmkdir: cannot create directory ‘A’: File exists\n");
-	// printf("Prints:\n");
-	// mkdir(currentFolder, strdup("A"));
-	// // check if no element was added
-	// assert(currentElement->next == NULL);
+	printf("***TEST ADD EXISTING DIRECTORY***\n");
+	printf("Should print:\nmkdir: cannot create directory ‘A’: File exists\n");
+	printf("Prints:\n");
+	mkdir(currentFolder, strdup("A"));
+	// check if no element was added
+	assert(currentElement->next->next->next == NULL);
 
-	// printf("***TEST CHECK EXISTING CONTENTS***\n");
-	// currentElement = folderContents->head;
-	// // the first element should be file "a"
-	// check_added_name = strcmp(currentElement->info->name, "a");
-	// assert(check_added_name == 0);
-	// // the second element should be file "b"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "b");
-	// assert(check_added_name == 0);
-	// // the third element should be directory "A"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "A");
-	// assert(check_added_name == 0);
-	// // check if directory "A" is the last element
-	// assert(currentElement->next == NULL);
+	printf("***TEST CHECK EXISTING CONTENTS***\n");
+	currentElement = folderContents->head;
+	// the first element should be file "a"
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// the second element should be file "b"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "b");
+	assert(check_added_name == 0);
+	// the third element should be directory "A"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// check if directory "A" is the last element
+	assert(currentElement->next == NULL);
 
-	// printf("\n");
+	printf("\n");
 
 
 	printf("----------TEST ls----------\n");
@@ -132,7 +132,7 @@ int main()
 	// // ls(currentFolder, "A");
 
 	printf("***TEST NON-EMPTY, CURRENT DIRECTORY***\n");
-	printf("Should print:\nb\na\n");
+	printf("Should print:\nA\nb\na\n");
 	printf("Prints:\n");
 	ls(currentFolder, NO_ARG);
 
@@ -379,6 +379,7 @@ int main()
 
 	freeTree(fileTree);
 	printf("----------SUCCESS! :)----------\n");
+	printf("DON'T FORGET TO CHECK PRINTS!\n");
 	printf("DON'T FORGET TO CHECK MEMORY LEAKS!\n");
 
 	return 0;

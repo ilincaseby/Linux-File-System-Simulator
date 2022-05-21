@@ -62,9 +62,11 @@ void mkdir(TreeNode* currentNode, char* folderName);
 /* Changes the current path to a given path. */
 TreeNode* cd(TreeNode* currentNode, char* path);
 
-void pwd(TreeNode* treeNode);
-
+/* Prints the hierarchy starting from the path given by `arg`. Shows the number
+of directories and files in the hierarchy. */
 void tree(TreeNode* currentNode, char* arg);
+
+void pwd(TreeNode* treeNode);
 
 void rm(TreeNode* currentNode, char* fileName);
 

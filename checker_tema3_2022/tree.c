@@ -121,7 +121,17 @@ void ls(TreeNode* currentNode, char* arg) {
 }
 
 void mkdir(TreeNode* currentNode, char* folderName) {
-    // TODO
+	List* contentsList = ((FolderContent*) currentNode->content)->children;
+    ListNode* folder = list_find_node(contentsList, folderName);
+	// check if the folder already exists
+	if (folder) {
+		printf("mkdir: cannot create directory ‘%s’: File exists\n", folderName);
+		return;
+	}
+
+	FolderContent* newFolderContent = createFolderContent();
+	list_add_first(contentsList, FOLDER_NODE, folderName, newFolderContent);
+	return;
 }
 
 void pwd(TreeNode* treeNode) {

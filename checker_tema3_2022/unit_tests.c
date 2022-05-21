@@ -374,6 +374,8 @@ int main()
 
 
 	freeTree(fileTree);
+	printf("----------SUCCESS! :)----------\n");
+	printf("DON'T FORGET TO CHECK MEMORY LEAKS!\n");
 
 	return 0;
 }

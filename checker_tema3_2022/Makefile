@@ -18,7 +18,7 @@ unit_testing:
 #######################DELETE BEFORE SUBMITTING#######################
 
 clean:
-	rm *.o sd_fs
+	rm sd_fs
 
 run:
 	./sd_fs

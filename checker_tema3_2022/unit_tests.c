@@ -27,11 +27,14 @@ int main()
 
 	printf("----------TEST touch----------\n");
 	printf("***TEST TOUCH EMPTY FILE***\n");
-	touch(currentFolder, strdup("a"), 0);
+	touch(currentFolder, strdup("a"), NO_ARG);
 	// check if the name of the added file is "a"
 	List* folderContents = ((struct FolderContent*)currentFolder->content)->children;
 	ListNode* currentElement = folderContents->head;
 	int check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// check if the file is empty
+	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, NO_ARG);
 	assert(check_added_name == 0);
 	// check if the file added is the only element
 	assert(currentElement->next == NULL);
@@ -49,7 +52,7 @@ int main()
 	assert(currentElement->next == NULL);
 
 	printf("***TEST TOUCH DUPLICATE FILE WITHOUT CONTENT***\n");
-	touch(currentFolder, strdup("b"), 0);
+	touch(currentFolder, strdup("b"), NO_ARG);
 	// check if the content of the file did not change
 	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
 	assert(check_added_name == 0);

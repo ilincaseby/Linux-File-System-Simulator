@@ -66,6 +66,7 @@ TreeNode* cd(TreeNode* currentNode, char* path);
 of directories and files in the hierarchy. */
 void tree(TreeNode* currentNode, char* arg);
 
+/* Prints the absolute path to the current working directory. */
 void pwd(TreeNode* treeNode);
 
 void rm(TreeNode* currentNode, char* fileName);

@@ -281,37 +281,38 @@ int main()
 
 	// printf("----------TEST rmdir----------\n");
 	// printf("***TEST EMPTY DIRECTORY***\n");
-	// // the current folder is B; change to A
-	// cd(currentFolder, "A");
-	// rmdir(currentFolder, "B");
-	// // check if only file c is left in directory A
+	// // change path to directory A
+	// currentFolder = fileTree.root;
+	// currentFolder = cd(currentFolder, "A");
+	// rmdir(currentFolder, "C");
+	// // check if only file `file` is left in directory A
 	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
 	// currentElement = folderContents->head;
 	// // the list must not be empty
 	// assert(currentElement);
-	// // the head must be c
-	// check_added_name = strcmp(currentElement->info->name, "c");
+	// // the head must be `file`
+	// check_added_name = strcmp(currentElement->info->name, "file");
 	// // the head must be the only node
 	// assert(!currentElement->next);
 	// // check with ls
-	// printf("Should print:\nc\n");
+	// printf("Should print:\nfile\n");
 	// printf("Prints:\n");
-	// ls(currentFolder, 0);
+	// ls(currentFolder, NO_ARG);
 
 	// printf("***TEST NON-EMPTY DIRECTORY***\n");
-	// cd(currentFolder, "root");
+	// currentFolder = fileTree.root;
 	// printf("Should print:\nrmdir: failed to remove 'A': Directory not empty\n");
 	// printf("Prints:\n");
 	// rmdir(currentFolder, "A");
 
 	// printf("***TEST NON-EXISTENT DIRECTORY***\n");
-	// cd(currentFolder, "A");
+	// currentFolder = cd(currentFolder, "A");
 	// printf("Should print:\nrmdir: failed to remove 'B': No such file or directory\n");
 	// printf("Prints:\n");
 	// rmdir(currentFolder, "B");
 
 	// printf("***TEST FILE***\n");
-	// cd(currentFolder, "root");
+	// currentFolder = fileTree.root;
 	// printf("Should print:\nrmdir: failed to remove 'a': Not a directory\n");
 	// printf("Prints:\n");
 	// rmdir(currentFolder, "a");
@@ -328,13 +329,13 @@ int main()
 	// currentElement = folderContents->head;
 	// // the list must not be empty
 	// assert(currentElement);
-	// // the head must be b
-	// check_added_name = strcmp(currentElement->info->name, "b");
+	// // the head must be A
+	// check_added_name = strcmp(currentElement->info->name, "A");
 	// assert(check_added_name == 0);
-	// // the next element must be A
+	// // the next element must be b
 	// currentElement = currentElement->next;
 	// assert(currentElement);
-	// check_added_name = strcmp(currentElement->info->name, "A");
+	// check_added_name = strcmp(currentElement->info->name, "b");
 	// assert(check_added_name == 0);
 	// // the next element must be NULL
 	// assert(!currentElement->next);

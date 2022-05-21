@@ -59,9 +59,10 @@ void ls(TreeNode* currentNode, char* arg);
 /* Creates a new directory with name `folderName` at the current path. */
 void mkdir(TreeNode* currentNode, char* folderName);
 
-void pwd(TreeNode* treeNode);
-
+/* Changes the current path to a given path. */
 TreeNode* cd(TreeNode* currentNode, char* path);
+
+void pwd(TreeNode* treeNode);
 
 void tree(TreeNode* currentNode, char* arg);
 

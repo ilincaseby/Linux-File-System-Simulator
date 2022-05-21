@@ -125,7 +125,8 @@ void mkdir(TreeNode* currentNode, char* folderName) {
     ListNode* folder = list_find_node(contentsList, folderName);
 	// check if the folder already exists
 	if (folder) {
-		printf("mkdir: cannot create directory ‘%s’: File exists\n", folderName);
+		printf("mkdir: cannot create directory '%s’: File exists\n", folderName);
+		free(folderName);
 		return;
 	}
 

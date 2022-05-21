@@ -208,7 +208,6 @@ printTreeLevels(TreeNode* currentNode, int level, int* dir_no, int* file_no) {
 
 void tree(TreeNode* currentNode, char* arg) {
     int dir_no = 0, file_no = 0;
-	char cmd[5] = "tree";
 	// the `get_to_path` function also checks exception cases
 	TreeNode* dir = get_to_path(currentNode, arg, arg, TREE_ERROR);
 	// check if the path is valid
@@ -219,25 +218,38 @@ void tree(TreeNode* currentNode, char* arg) {
 }
 
 void pwd(TreeNode* treeNode) {
-    // TODO
+	// initialize path name with string terminator;
+	char* path = strdup("");
+	// go backwards on the path starting from `treeNode`
+	while (treeNode->parent) {
+		size_t old_len = strlen(path);
+		// reallocate memory for the path name to fit the new level
+		path = realloc(path, old_len + strlen(treeNode->name) + 2);
+		// move the previous path name to the right to fit the name of the new
+		// directory
+		memmove(path + strlen(treeNode->name) + 1, path, old_len + 1);
+		// add the level separator "/"
+		memset(path, '/', 1);
+		// add the directory from the current level to the beginning
+		memcpy(path + 1, treeNode->name, strlen(treeNode->name));
+		treeNode = treeNode->parent;
+	}
+	// print the absolute path
+	printf("root%s\n", path);
+	free(path);
 }
-
 
 void rmrec(TreeNode* currentNode, char* resourceName) {
     // TODO
 }
 
-
 void rm(TreeNode* currentNode, char* fileName) {
     // TODO
 }
 
-
 void rmdir(TreeNode* currentNode, char* folderName) {
     // TODO
 }
-
-
 
 void cp(TreeNode* currentNode, char* source, char* destination) {
     // TODO
@@ -246,4 +258,3 @@ void cp(TreeNode* currentNode, char* source, char* destination) {
 void mv(TreeNode* currentNode, char* source, char* destination) {
     // TODO
 }
-

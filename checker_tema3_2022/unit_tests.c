@@ -190,10 +190,20 @@ int main()
 	// check if file "a" is the last element
 	assert(currentElement->next == NULL);
 
+	printf("***TEST CHANGE TO INVALID PATH 1 (unexistend directory)***\n");
+	printf("Should print:\ncd: no such file or directory: B\n");
+	printf("Prints:\n");
+	currentFolder = cd(currentFolder, "B");
+
+	printf("***TEST CHANGE TO INVALID PATH 2 (file)***\n");
+	printf("Should print:\ncd: no such file or directory: b\n");
+	printf("Prints:\n");
+	currentFolder = cd(currentFolder, "b");
+
 	printf("\n");
 
 
-	// printf("----------TEST tree----------\n");
+	printf("----------TEST tree----------\n");
 	// // add a file and a directory to directory "A"
 	// cd(currentFolder, "A");
 	// touch(currentFolder, strdup("c"), 0);
@@ -215,12 +225,12 @@ int main()
 	// printf("Prints:\n");
 	// tree(currentFolder, "A/B");
 
-	// printf("***TEST INVALID PATH***\n");
-	// printf("Should print:\na [error opening dir]\n\n0 directories, 0 files\n");
-	// printf("Prints:\n");
-	// tree(currentFolder, "a");
+	printf("***TEST INVALID PATH***\n");
+	printf("Should print:\na [error opening dir]\n\n0 directories, 0 files\n");
+	printf("Prints:\n");
+	tree(currentFolder, "a");
 
-	// printf("\n");
+	printf("\n");
 
 
 	// printf("----------TEST pwd----------\n");
@@ -381,9 +391,9 @@ int main()
 
 
 	freeTree(fileTree);
-	printf("----------SUCCESS! :)----------\n");
-	printf("DON'T FORGET TO CHECK PRINTS!\n");
-	printf("DON'T FORGET TO CHECK MEMORY LEAKS!\n");
+	printf("--------------------------SUCCESS! :)--------------------------\n");
+	printf("DON'T FORGET TO CHECK PRINTS ABOVE!\n");
+	printf("DON'T FORGET TO CHECK MEMORY LEAKS USING `make valgrind_check`!\n");
 
 	return 0;
 }

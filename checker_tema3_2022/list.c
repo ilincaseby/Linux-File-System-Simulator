@@ -57,7 +57,6 @@ list_add_first(List* list, enum TreeNodeType type, char* name, void* content)
 	}
 
 	// replace the head with the new node
-	list->head->info->parent = new->info;
 	new->next = list->head;
 	list->head = new;
 

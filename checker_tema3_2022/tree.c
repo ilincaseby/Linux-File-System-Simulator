@@ -84,9 +84,10 @@ void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
 	List* contentsList = ((FolderContent*) currentNode->content)->children;
 	// check if the node is in the list
 	ListNode* newNode = list_find_node(contentsList, fileName);
-	if (newNode == NULL) { //  the node is not in the list
+	if (newNode == NULL) {  // the node is not in the list
 		FileContent* newFileContent = createFileContent(fileContent);
-		list_add_first(contentsList, FILE_NODE, fileName, newFileContent);
+		newNode = list_add_first(contentsList, FILE_NODE, fileName, newFileContent);
+		newNode->info->parent = currentNode;
 		return;
 	}
 	// the node is in the list; command does nothing
@@ -131,15 +132,43 @@ void mkdir(TreeNode* currentNode, char* folderName) {
 	}
 
 	FolderContent* newFolderContent = createFolderContent();
-	list_add_first(contentsList, FOLDER_NODE, folderName, newFolderContent);
+	folder = list_add_first(contentsList, FOLDER_NODE, folderName, newFolderContent);
+	folder->info->parent = currentNode;
 	return;
 }
 
-void pwd(TreeNode* treeNode) {
-    // TODO
+TreeNode* cd(TreeNode* currentNode, char* path) {
+	char* path_copy = strdup(path);
+	char* new_dir_name = strtok(path_copy, "/");
+	while (new_dir_name != NULL) {
+		List* contentsList = ((FolderContent*) currentNode->content)->children;
+		// change to parent directory
+		if (strcmp(new_dir_name, PARENT_DIR) == 0) {
+			currentNode = currentNode->parent;
+			new_dir_name = strtok(NULL, "/");
+			continue;
+		}
+
+		ListNode* node = list_find_node(contentsList, new_dir_name);
+		// check if path exists
+		if (!node) {
+			printf("cd: no such file or directory: %s\n", path);
+		}
+
+		// path exists but is a file
+		if (node->info->type == FILE_NODE) {
+			printf("cd: no such file or directory: %s\n", path);
+		}
+		// path exists and is a directory
+		currentNode = node->info;
+		new_dir_name = strtok(NULL, "/");
+	}
+
+	free(path_copy);
+	return currentNode;
 }
 
-TreeNode* cd(TreeNode* currentNode, char* path) {
+void pwd(TreeNode* treeNode) {
     // TODO
 }
 

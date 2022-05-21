@@ -126,10 +126,10 @@ int main()
 	printf("Prints:\n");
 	ls(currentFolder, "b");
 
-	// // printf("***TEST EMPTY DIRECTORY***\n");
-	// // printf("Should print:\n \n"); // CHECK TESTS TO SEE WHAT SHOULD BE PRINTED
-	// // printf("Prints:\n");
-	// // ls(currentFolder, "A");
+	printf("***TEST EMPTY DIRECTORY***\n");
+	printf("Should print:\n \n"); // CHECK TESTS TO SEE WHAT SHOULD BE PRINTED
+	printf("Prints:\n");
+	ls(currentFolder, "A");
 
 	printf("***TEST NON-EMPTY, CURRENT DIRECTORY***\n");
 	printf("Should print:\nA\nb\na\n");

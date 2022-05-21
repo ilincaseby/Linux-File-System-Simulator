@@ -8,8 +8,7 @@
 #define NO_ARG ""
 #define PARENT_DIR ".."
 
-/* Creates a TreeNode* with name `treeNodeName`. */
-static TreeNode* createTreeNode(char* treeNodeName) {
+TreeNode* createTreeNode(char* treeNodeName) {
 	TreeNode* treeNode = malloc(sizeof(*treeNode));
 	treeNode->parent = NULL;
 	treeNode->name = treeNodeName;
@@ -73,6 +72,21 @@ void freeTree(FileTree fileTree) {
 	freeTreeNode(fileTree.root);
 }
 
+void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
+	List* contentsList = ((FolderContent*) currentNode->content)->children;
+	// check if the node is in the list
+	ListNode* newNode = list_find_node(contentsList, fileName);
+	if (newNode == NULL) { // the node is not in the list
+		FileContent* newFileContent = createFileContent(fileContent);
+		newNode = list_add_last(contentsList, FILE_NODE, fileName, newFileContent);
+		newNode->info->parent = currentNode;
+		return;
+	}
+
+	// the node is in the list; replace the original content
+	free(((FileContent*) newNode->info->content)->text);
+	((FileContent*) newNode->info->content)->text = fileContent;
+}
 
 void ls(TreeNode* currentNode, char* arg) {
     // TODO
@@ -113,10 +127,6 @@ void rmdir(TreeNode* currentNode, char* folderName) {
     // TODO
 }
 
-
-void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
-    // TODO
-}
 
 
 void cp(TreeNode* currentNode, char* source, char* destination) {

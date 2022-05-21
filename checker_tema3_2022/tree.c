@@ -84,10 +84,9 @@ void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
 	List* contentsList = ((FolderContent*) currentNode->content)->children;
 	// check if the node is in the list
 	ListNode* newNode = list_find_node(contentsList, fileName);
-	if (newNode == NULL) { // the node is not in the list
+	if (newNode == NULL) { //  the node is not in the list
 		FileContent* newFileContent = createFileContent(fileContent);
-		newNode = list_add_last(contentsList, FILE_NODE, fileName, newFileContent);
-		newNode->info->parent = currentNode;
+		list_add_first(contentsList, FILE_NODE, fileName, newFileContent);
 		return;
 	}
 	// the node is in the list; command does nothing
@@ -121,11 +120,13 @@ void ls(TreeNode* currentNode, char* arg) {
 	printList(folder->children);
 }
 
+void mkdir(TreeNode* currentNode, char* folderName) {
+    // TODO
+}
 
 void pwd(TreeNode* treeNode) {
     // TODO
 }
-
 
 TreeNode* cd(TreeNode* currentNode, char* path) {
     // TODO
@@ -135,12 +136,6 @@ TreeNode* cd(TreeNode* currentNode, char* path) {
 void tree(TreeNode* currentNode, char* arg) {
     // TODO
 }
-
-
-void mkdir(TreeNode* currentNode, char* folderName) {
-    // TODO
-}
-
 
 void rmrec(TreeNode* currentNode, char* resourceName) {
     // TODO

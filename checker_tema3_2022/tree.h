@@ -53,15 +53,17 @@ void freeTree(FileTree fileTree);
 directory. */
 void touch(TreeNode* currentNode, char* fileName, char* fileContent);
 
+/* Lists the contents of the specified directory or file. */
 void ls(TreeNode* currentNode, char* arg);
+
+/* Creates a new directory with name `folderName` at the current path. */
+void mkdir(TreeNode* currentNode, char* folderName);
 
 void pwd(TreeNode* treeNode);
 
 TreeNode* cd(TreeNode* currentNode, char* path);
 
 void tree(TreeNode* currentNode, char* arg);
-
-void mkdir(TreeNode* currentNode, char* folderName);
 
 void rm(TreeNode* currentNode, char* fileName);
 

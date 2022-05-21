@@ -132,7 +132,8 @@ void mkdir(TreeNode* currentNode, char* folderName) {
 	}
 
 	FolderContent* newFolderContent = createFolderContent();
-	folder = list_add_first(contentsList, FOLDER_NODE, folderName, newFolderContent);
+	folder = list_add_first(contentsList, FOLDER_NODE, folderName,
+						   newFolderContent);
 	folder->info->parent = currentNode;
 	return;
 }
@@ -153,11 +154,15 @@ TreeNode* cd(TreeNode* currentNode, char* path) {
 		// check if path exists
 		if (!node) {
 			printf("cd: no such file or directory: %s\n", path);
+			free(path_copy);
+			return currentNode;
 		}
 
 		// path exists but is a file
 		if (node->info->type == FILE_NODE) {
 			printf("cd: no such file or directory: %s\n", path);
+			free(path_copy);
+			return currentNode;
 		}
 		// path exists and is a directory
 		currentNode = node->info;

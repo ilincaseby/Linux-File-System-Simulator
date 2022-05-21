@@ -21,6 +21,26 @@ void freeListNode(ListNode* listNode) {
 	free(listNode);
 }
 
+void printList(List* list) {
+	// check if the list exists
+	if (!list) {
+		return;
+	}
+
+	// if the list is empty print nothing
+	if (!list->head) {
+		printf("\n");
+		return;
+	}
+
+	// go through each element of the list and print its name
+	ListNode* curr = list->head;
+	while (curr) {
+		printf("%s\n", curr->info->name);
+		curr = curr->next;
+	}
+}
+
 ListNode*
 list_add_last(List* list, enum TreeNodeType type, char* name, void* content)
 {

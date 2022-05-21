@@ -27,6 +27,9 @@ void freeList(List* list);
 /* Frees a list node. */
 void freeListNode(ListNode* listNode);
 
+/* Prints the names of the files and folders contained in `list`. */
+void printList(List* list);
+
 /* Adds a new element at the end of the list. */
 ListNode*
 list_add_last(List* list, enum TreeNodeType type, char* name, void* content);

@@ -82,10 +82,7 @@ void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
 		newNode->info->parent = currentNode;
 		return;
 	}
-
-	// the node is in the list; replace the original content
-	free(((FileContent*) newNode->info->content)->text);
-	((FileContent*) newNode->info->content)->text = fileContent;
+	// the node is in the list; do nothing
 }
 
 void ls(TreeNode* currentNode, char* arg) {

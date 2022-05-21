@@ -7,6 +7,9 @@
 #define TREE_CMD_INDENT_SIZE 4
 #define NO_ARG ""
 #define PARENT_DIR ".."
+#define FREE_CONTENT(content) ({if (strcmp(content, NO_ARG)) { \
+									free(content); \
+								}})
 
 TreeNode* createTreeNode(char* treeNodeName) {
 	TreeNode* treeNode = malloc(sizeof(*treeNode));
@@ -42,9 +45,10 @@ FileTree createFileTree(char* rootFolderName) {
 
 /* Frees the memory allocated for a file. */
 static void freeFileContent(FileContent* fileContent) {
-	if (strcmp(fileContent->text, NO_ARG) != 0) {
-		(fileContent->text);
-	}
+	// if (strcmp(fileContent->text, NO_ARG) != 0) {
+	// 	free(fileContent->text);
+	// }
+	FREE_CONTENT(fileContent->text);
 	free(fileContent);
 }
 
@@ -85,7 +89,9 @@ void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
 		newNode->info->parent = currentNode;
 		return;
 	}
-	// the node is in the list; do nothing
+	// the node is in the list; command does nothing
+	free(fileName);
+	FREE_CONTENT(fileContent);
 }
 
 void ls(TreeNode* currentNode, char* arg) {

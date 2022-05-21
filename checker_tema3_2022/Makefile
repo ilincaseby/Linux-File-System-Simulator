@@ -12,9 +12,9 @@ valgrind_check:
 	--track-origins=yes \
 	./sd_fs
 
+# check with command: make unit_testing
 unit_testing:
 	gcc tree.c unit_tests.c list.c -o sd_fs; ./sd_fs
-# check with command: make unit_testing
 #######################DELETE BEFORE SUBMITTING#######################
 
 clean:

@@ -81,6 +81,8 @@ int main()
 	currentElement = folderContents->head;
 	check_added_name = strcmp(currentElement->info->name, "A");
 	assert(check_added_name == 0);
+	// // check if A is empty
+	// assert(currentElement->info->content == NULL);
 	// check if the added directory is the last element
 	assert(currentElement->next->next->next == NULL);
 
@@ -139,55 +141,56 @@ int main()
 	printf("\n");
 
 
-	// printf("----------TEST cd----------\n");
-	// printf("***TEST CHANGE TO LEVEL 1 PATH***\n");
-	// cd(currentFolder, "A");
-	// // check if the current directory is "A"
-	// assert(strcmp(currentFolder->name, "A") == 0);
+	printf("----------TEST cd----------\n");
+	printf("***TEST CHANGE TO LEVEL 1 PATH***\n");
+	currentFolder = cd(currentFolder, "A");
+	// check if the current directory is "A"
+	assert(strcmp(currentFolder->name, "A") == 0);
 	// // check if "A" is empty
 	// assert(currentFolder->content == NULL);
 
-	// printf("***TEST CHANGE TO PARENT PATH***\n");
-	// cd(currentFolder, "..");
-	// // check if the current directory is "root"
-	// assert(strcmp(currentFolder->name, "root") == 0);
-	// // test existing contents of "root"
-	// currentElement = folderContents->head;
-	// // the first element should be file "a"
-	// check_added_name = strcmp(currentElement->info->name, "a");
-	// assert(check_added_name == 0);
-	// // the second element should be file "b"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "b");
-	// assert(check_added_name == 0);
-	// // the third element should be directory "A"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "A");
-	// assert(check_added_name == 0);
-	// // check if directory "A" is the last element
-	// assert(currentElement->next == NULL);
+	printf("***TEST CHANGE TO PARENT PATH***\n");
+	// current directory is A
+	currentFolder = cd(currentFolder, "..");
+	// check if the current directory is "root"
+	assert(strcmp(currentFolder->name, "root") == 0);
+	// test existing contents of "root"
+	currentElement = folderContents->head;
+	// the first element should be directory "A"
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// the second element should be file "b"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "b");
+	assert(check_added_name == 0);
+	// the third element should be file "a"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// check if file "a" is the last element
+	assert(currentElement->next == NULL);
 
-	// printf("***TEST CHANGE TO COMPOSITE PATH***\n");
-	// cd(currentFolder, "A/..");
-	// // check if the current directory is "root"
-	// assert(strcmp(currentFolder->name, "root") == 0);
-	// // test existing contents of "root"
-	// currentElement = folderContents->head;
-	// // the first element should be file "a"
-	// check_added_name = strcmp(currentElement->info->name, "a");
-	// assert(check_added_name == 0);
-	// // the second element should be file "b"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "b");
-	// assert(check_added_name == 0);
-	// // the third element should be directory "A"
-	// currentElement = currentElement->next;
-	// check_added_name = strcmp(currentElement->info->name, "A");
-	// assert(check_added_name == 0);
-	// // check if directory "A" is the last element
-	// assert(currentElement->next == NULL);
+	printf("***TEST CHANGE TO COMPOSITE PATH***\n");
+	currentFolder = cd(currentFolder, "A/..");
+	// check if the current directory is "root"
+	assert(strcmp(currentFolder->name, "root") == 0);
+	// test existing contents of "root"
+	currentElement = folderContents->head;
+	// the first element should be directory "A"
+	check_added_name = strcmp(currentElement->info->name, "A");
+	assert(check_added_name == 0);
+	// the second element should be file "b"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "b");
+	assert(check_added_name == 0);
+	// the third element should be file "a"
+	currentElement = currentElement->next;
+	check_added_name = strcmp(currentElement->info->name, "a");
+	assert(check_added_name == 0);
+	// check if file "a" is the last element
+	assert(currentElement->next == NULL);
 
-	// printf("\n");
+	printf("\n");
 
 
 	// printf("----------TEST tree----------\n");

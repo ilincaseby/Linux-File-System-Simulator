@@ -10,6 +10,7 @@
 #define FREE_CONTENT(content) ({if (strcmp(content, NO_ARG)) { \
 									free(content); \
 								}})
+#define NO_ARGUMENT (!strcmp(arg, NO_ARG))
 
 TreeNode* createTreeNode(char* treeNodeName) {
 	TreeNode* treeNode = malloc(sizeof(*treeNode));
@@ -95,7 +96,29 @@ void touch(TreeNode* currentNode, char* fileName, char* fileContent) {
 }
 
 void ls(TreeNode* currentNode, char* arg) {
-    // TODO
+	List* contentsList = ((FolderContent*) currentNode->content)->children;
+    // check if there is no argument
+	if (NO_ARGUMENT) {
+		printList(contentsList);
+		return;
+	}
+
+	// if there is an argument, check if it is valid
+	ListNode* listNode = list_find_node(contentsList, arg);
+	if (!listNode) {
+		printf("ls: cannot access '%s': No such file or directory\n", arg);
+		return;
+	}
+
+	TreeNode* resource = listNode->info;
+	// the argument is valid and is a file
+	if (resource->type == FILE_NODE) {
+		printf("%s: %s\n", resource->name, ((FileContent*) resource->content)->text);
+		return;
+	}
+	// the argument is valid and is a directory
+	FolderContent* folder = resource->content;
+	printList(folder->children);
 }
 
 

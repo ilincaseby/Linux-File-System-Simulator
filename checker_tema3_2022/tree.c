@@ -141,7 +141,8 @@ void mkdir(TreeNode* currentNode, char* folderName) {
 }
 
 /* Returns the path given by the argument `path`. */
-static TreeNode* get_to_path(TreeNode* currentNode, char* path, char* print_arg1, char* print_arg2) {
+static TreeNode* get_to_path(TreeNode* currentNode, char* path,
+							 char* print_arg1, char* print_arg2) {
 	char* path_copy = strdup(path);
 	char* new_dir_name = strtok(path_copy, "/");
 	while (new_dir_name != NULL) {

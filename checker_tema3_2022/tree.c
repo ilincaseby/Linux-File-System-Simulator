@@ -42,7 +42,9 @@ FileTree createFileTree(char* rootFolderName) {
 
 /* Frees the memory allocated for a file. */
 static void freeFileContent(FileContent* fileContent) {
-	free(((FileContent*) fileContent)->text);
+	if (strcmp(fileContent->text, NO_ARG) != 0) {
+		(fileContent->text);
+	}
 	free(fileContent);
 }
 
@@ -66,6 +68,7 @@ void freeTreeNode(TreeNode* treeNode) {
 		freeFolderContent((FolderContent*) treeNode->content);
 	}
 	free(treeNode);
+	treeNode = NULL;
 }
 
 void freeTree(FileTree fileTree) {

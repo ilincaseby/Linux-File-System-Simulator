@@ -117,6 +117,9 @@ int main()
 	currentElement = ((FolderContent*) currentFolder->content)->children->head;
 	check_added_name = strcmp(currentElement->info->name, "C");
 	assert(check_added_name == 0);
+	// check if the parent of the added directory is A
+	check_added_name = strcmp(currentElement->info->parent->name, "A");
+	assert(check_added_name == 0);
 
 	printf("***TEST ADD NEW FILE LEVEL 1***\n");
 	touch(currentFolder, strdup("file"), strdup("content_file"));
@@ -254,25 +257,26 @@ int main()
 	printf("\n");
 
 
-	// printf("----------TEST pwd----------\n");
-	// printf("***TEST FROM ROOT***\n");
-	// printf("Should print:\nroot\n");
-	// printf("Prints:\n");
-	// pwd(currentFolder);
+	printf("----------TEST pwd----------\n");
+	currentFolder = fileTree.root;
+	printf("***TEST FROM ROOT***\n");
+	printf("Should print:\nroot\n");
+	printf("Prints:\n");
+	pwd(currentFolder);
 
-	// printf("***TEST FROM LEVEL 1 PATH***\n");
-	// cd(currentFolder, "A");
-	// printf("Should print:\nroot/A\n");
-	// printf("Prints:\n");
-	// pwd(currentFolder);
+	printf("***TEST FROM LEVEL 1 PATH***\n");
+	currentFolder = cd(currentFolder, "A");
+	printf("Should print:\nroot/A\n");
+	printf("Prints:\n");
+	pwd(currentFolder);
 
-	// printf("***TEST FROM LEVEL 2 PATH***\n");
-	// cd(currentFolder, "B");
-	// printf("Should print:\nroot/A/B\n");
-	// printf("Prints:\n");
-	// pwd(currentFolder);
+	printf("***TEST FROM LEVEL 2 PATH***\n");
+	currentFolder = cd(currentFolder, "C");
+	printf("Should print:\nroot/A/C\n");
+	printf("Prints:\n");
+	pwd(currentFolder);
 
-	// printf("\n");
+	printf("\n");
 
 
 	// printf("----------TEST rmdir----------\n");

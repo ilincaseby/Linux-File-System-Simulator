@@ -106,33 +106,33 @@ int main()
 	// printf("\n");
 
 
-	// printf("----------TEST ls----------\n");
-	// printf("***TEST EMPTY FILE***\n");
-	// printf("Should print:\na: \n");
-	// printf("Prints:\n");
-	// ls(currentFolder, "a");
+	printf("----------TEST ls----------\n");
+	printf("***TEST INVALID ARGUMENT***\n");
+	printf("Should print:\nls: cannot access 'c': No such file or directory\n");
+	printf("Prints:\n");
+	ls(currentFolder, "c");
 
-	// printf("***TEST NON-EMPTY FILE***\n");
-	// printf("Should print:\nb: content_b\n");
-	// printf("Prints:\n");
-	// ls(currentFolder, "b");
+	printf("***TEST EMPTY FILE***\n");
+	printf("Should print:\na: \n");
+	printf("Prints:\n");
+	ls(currentFolder, "a");
+
+	printf("***TEST NON-EMPTY FILE***\n");
+	printf("Should print:\nb: content_b\n");
+	printf("Prints:\n");
+	ls(currentFolder, "b");
 
 	// printf("***TEST EMPTY DIRECTORY***\n");
 	// printf("Should print:\n \n"); // CHECK TESTS TO SEE WHAT SHOULD BE PRINTED
 	// printf("Prints:\n");
 	// ls(currentFolder, "A");
 
-	// printf("***TEST NON-EMPTY, CURRENT DIRECTORY***\n");
-	// printf("Should print:\na\nb\nA\n");
-	// printf("Prints:\n");
-	// ls(currentFolder, 0);
+	printf("***TEST NON-EMPTY, CURRENT DIRECTORY***\n");
+	printf("Should print:\na\nb\n");
+	printf("Prints:\n");
+	ls(currentFolder, NO_ARG);
 
-	// printf("***TEST INVALID ARGUMENT***\n");
-	// printf("Should print:\nls: cannot access 'c': No such file or directory\n");
-	// printf("Prints:\n");
-	// ls(currentFolder, "c");
-
-	// printf("\n");
+	printf("\n");
 
 
 	// printf("----------TEST cd----------\n");

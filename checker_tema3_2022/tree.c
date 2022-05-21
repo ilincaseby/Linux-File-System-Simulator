@@ -12,7 +12,7 @@
 static TreeNode* createTreeNode(char* treeNodeName) {
 	TreeNode* treeNode = malloc(sizeof(*treeNode));
 	treeNode->parent = NULL;
-	treeNode->name = strdup(treeNodeName);
+	treeNode->name = treeNodeName;
 	treeNode->content = NULL;
 	// the field `type` is initialized depending on the command
 	return treeNode;
@@ -21,7 +21,7 @@ static TreeNode* createTreeNode(char* treeNodeName) {
 /* Creates a FileContent with content `fileContent`. */
 static FileContent* createFileContent(char* fileContent) {
     FileContent* file = malloc(sizeof(*file));
-	file->text = strdup(fileContent);
+	file->text = fileContent;
 	return file;
 }
 

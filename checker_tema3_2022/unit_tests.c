@@ -203,20 +203,20 @@ int main()
 	printf("\n");
 
 
-	printf("----------TEST tree----------\n");
+	// printf("----------TEST tree----------\n");
 	// // add a file and a directory to directory "A"
-	// cd(currentFolder, "A");
+	// currentFolder = cd(currentFolder, "A");
 	// touch(currentFolder, strdup("c"), 0);
 	// mkdir(currentFolder, strdup("B"));
 	// // go back to root
-	// cd(currentFolder, "..");
+	// currentFolder = cd(currentFolder, "..");
 	// printf("***TEST CURRENT PATH (root)***\n");
-	// printf("Should print:\na\nb\nA\n    c\n    B\n2 directories, 3 files\n");
+	// printf("Should print:\nA\n    B\n    C\nb\na\n2 directories, 3 files\n");
 	// printf("Prints:\n");
-	// tree(currentFolder, 0);
+	// tree(currentFolder, NO_ARG);
 
 	// printf("***TEST LEVEL 1 PATH***\n");
-	// printf("Should print:\nc\nB\n1 directories, 1 files\n");
+	// printf("Should print:\nB\nc\n1 directories, 1 files\n");
 	// printf("Prints:\n");
 	// tree(currentFolder, "A");
 
@@ -225,12 +225,17 @@ int main()
 	// printf("Prints:\n");
 	// tree(currentFolder, "A/B");
 
-	printf("***TEST INVALID PATH***\n");
-	printf("Should print:\na [error opening dir]\n\n0 directories, 0 files\n");
-	printf("Prints:\n");
-	tree(currentFolder, "a");
+	// printf("***TEST INVALID PATH 1 (unexistent directory)***\n");
+	// printf("Should print:\nC [error opening dir]\n\n0 directories, 0 files\n");
+	// printf("Prints:\n");
+	// tree(currentFolder, "C");
 
-	printf("\n");
+	// printf("***TEST INVALID PATH 2 (file)***\n");
+	// printf("Should print:\na [error opening dir]\n\n0 directories, 0 files\n");
+	// printf("Prints:\n");
+	// tree(currentFolder, "a");
+
+	// printf("\n");
 
 
 	// printf("----------TEST pwd----------\n");

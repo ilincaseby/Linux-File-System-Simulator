@@ -475,6 +475,28 @@ static TreeNode* get_to_destination_path(char* cmd, TreeNode* currentNode,
 static void copy_content(TreeNode* source, TreeNode* destination) {
 	if (destination->type == FOLDER_NODE) {  // the destination is a directory
 		FolderContent* dest_content = destination->content;
+
+		if (source->type == FILE_NODE) {  // copy a file to a directory
+			char* src_text = ((FileContent*) source->content)->text;
+			FileContent* content_copy = createFileContent(strdup(src_text);
+			ListNode* new_node = list_add_first(dest_content->children,
+												source->type, source->name,
+												content_copy);
+			new_node->info->parent = destination;
+		} else {  // copy a directory to a directory
+			FolderContent* src_content = source->content;
+			ListNode* src_node = src_content->children->head;
+			FolderContent* content_copy = createFolderContent();
+			ListNode* new_node = list_add_first(dest_content->children,
+												source->type, source->name,
+												content_copy);
+			new_node->info->parent = destination;
+			TreeNode* new_destination = new_node->info;
+			while (src_node) {
+				copy_content(src_node->info, new_destination);
+				src_node = src_node->next;
+			}
+		}
 	} else {  // the destination is a file
 		FileContent* dest_content = destination->content;
 		FileContent* src_content = source->content;

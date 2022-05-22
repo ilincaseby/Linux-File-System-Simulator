@@ -239,28 +239,6 @@ void pwd(TreeNode* treeNode) {
 	free(path);
 }
 
-/* Free an empty dir proccess */
-static void free_the_dir(ListNode *directory) {
-	TreeNode *act_dir = directory->info;
-	free(act_dir->name);
-	FolderContent *dir_content = (FolderContent *) act_dir->content;
-	free(dir_content->children);
-	free(dir_content);
-	free(act_dir);
-	free(directory);
-}
-
-/* Actual free a file */
-static void free_the_file(ListNode *file_list_node) {
-	TreeNode *actual_node = file_list_node->info;
-	free(actual_node->name);
-	FileContent *texty = (FileContent *) actual_node->content;
-	free(texty->text);
-	free(texty);
-	free(actual_node);
-	free(file_list_node);
-}
-
 /* A function used by rmrec for recursivity use */
 static void recursive_rm(ListNode *dir) {
 	FolderContent *dir_content = (FolderContent *) dir->info->content;
@@ -268,12 +246,12 @@ static void recursive_rm(ListNode *dir) {
 	while (nodey) {
 		nodey = list_remove_nth_node(dir_content->children, 0);
 		if (nodey->info->type == FILE_NODE)
-			free_the_file(nodey);
+			freeListNode(nodey);
 		if (nodey->info->type == FOLDER_NODE)
 			recursive_rm(nodey);
 		nodey = dir_content->children->head;
 	}
-	free_the_dir(dir);
+	freeListNode(dir);
 }
 
 void rmrec(TreeNode* currentNode, char* resourceName) {
@@ -287,7 +265,7 @@ void rmrec(TreeNode* currentNode, char* resourceName) {
 	// it and return back, if it's a folder, recursive_rm
 	// have a role here
 	if (!search_var) {
-		printf("rmrec: failed to remove '%s': No such file or directory"
+		printf("rmrec: failed to remove '%s': No such file or directory\n"
 			, resourceName);
 		return;
 	}
@@ -345,7 +323,7 @@ void rm(TreeNode* currentNode, char* fileName) {
 		}
 		looking_one = list_remove_nth_node(list_to_find_index, index);
 		// free the whole memory allocated by the file
-		free_the_file(looking_one);
+		freeListNode(looking_one);
 	}
 }
 
@@ -382,7 +360,7 @@ void rmdir(TreeNode* currentNode, char* folderName) {
 	}
 	search_var = list_remove_nth_node(what_folder_contains->children, index);
 	// free the whole memory allocated
-	free_the_dir(search_var);
+	freeListNode(search_var);
 }
 
 /* Returns the element from the source path. */

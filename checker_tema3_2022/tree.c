@@ -251,8 +251,120 @@ void rmdir(TreeNode* currentNode, char* folderName) {
     // TODO
 }
 
+/* Returns the element from the source path. */
+static TreeNode* get_to_source_path(char* cmd, TreeNode* currentNode,
+									char* src) {
+	char* path_copy = strdup(src);
+	char* new_dir_name = strtok(path_copy, "/");
+	while (new_dir_name != NULL) {
+		List* contentsList = ((FolderContent*) currentNode->content)->children;
+		// change to parent directory
+		if (strcmp(new_dir_name, PARENT_DIR) == 0) {
+			currentNode = currentNode->parent;
+			new_dir_name = strtok(NULL, "/");
+			continue;
+		}
+
+		ListNode* node = list_find_node(contentsList, new_dir_name);
+		// path does not exist
+		if (!node) {
+			printf("%s: failed to access '%s': Not a directory\n", cmd, src);
+			currentNode = NULL;
+			break;
+		}
+
+		// path exists and is a file
+		if (node->info->type == FILE_NODE) {
+			// if the file is not at the end of the path, the path is invalid
+			if ((new_dir_name = strtok(NULL, "/"))) {
+				printf("%s: failed to access '%s': Not a directory\n", cmd,
+					   src);
+				currentNode = NULL;
+				break;
+			}
+
+			// the path is valid
+			currentNode = node->info;
+			break;
+		}
+		// path exists and is a directory
+		currentNode = node->info;
+		new_dir_name = strtok(NULL, "/");
+	}
+
+	free(path_copy);
+	// the `cp` command is invalid if the source path ends in a directory
+	if (strcmp(cmd, "cp") == 0 && currentNode->type == FOLDER_NODE) {
+		printf("cp: -r not specified; omitting directory '%s'\n", src);
+		return NULL;
+	}
+	// the path is valid
+	return currentNode;
+}
+
+/* Returns the element from the destination path. */
+static TreeNode* get_to_destination_path(char* cmd, TreeNode* currentNode,
+										 char* dest) {
+	char* path_copy = strdup(dest);
+	char* new_res_name = strtok(path_copy, "/");
+	while (new_res_name != NULL) {
+		List* contentsList = ((FolderContent*) currentNode->content)->children;
+		// change to parent directory
+		if (strcmp(new_res_name, PARENT_DIR) == 0) {
+			currentNode = currentNode->parent;
+			new_res_name = strtok(NULL, "/");
+			continue;
+		}
+
+		ListNode* node = list_find_node(contentsList, new_res_name);
+		// path does not exist
+		if (!node) {
+			// if `node` is not at the end of the file the path is invalid
+			// make a copy of the current name
+			char* new_res_name_copy = new_res_name;
+			if ((new_res_name = strtok(NULL, "/"))) {
+				printf("%s: failed to access '%s': Not a directory\n", cmd,
+					   dest);
+				currentNode = NULL;
+				break;
+			}
+
+			// the path is valid; create the new file
+			touch(currentNode, strdup(new_res_name_copy), NO_ARG);
+			contentsList = ((FolderContent*) currentNode->content)->children;
+			currentNode = contentsList->head->info;
+			break;
+		}
+
+		// path exists and is a file
+		if (node->info->type == FILE_NODE) {
+			// if the file is not at the end of the path, the path is invalid
+			if ((new_res_name = strtok(NULL, "/"))) {
+				printf("%s: failed to access '%s': Not a directory\n", cmd,
+					   dest);
+				currentNode = NULL;
+				break;
+			}
+
+			// the path is valid
+			currentNode = node->info;
+			break;
+		}
+		// path exists and is a directory
+		currentNode = node->info;
+		new_res_name = strtok(NULL, "/");
+	}
+
+	free(path_copy);
+	return currentNode;
+}
+
+
 void cp(TreeNode* currentNode, char* source, char* destination) {
-    // TODO
+	char cmd[3] = "cp";
+    TreeNode* source_file = get_to_source_path(cmd, currentNode, source);
+	TreeNode* destination_file = get_to_destination_path(cmd, currentNode,
+														 destination);
 }
 
 void mv(TreeNode* currentNode, char* source, char* destination) {

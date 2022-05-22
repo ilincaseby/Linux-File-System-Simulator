@@ -281,7 +281,7 @@ void rmrec(TreeNode* currentNode, char* resourceName) {
 	search_var = list_remove_nth_node(dir_content->children, index);
 	// there are two case, one for file, one for directory
 	if (search_var->info->type == FILE_NODE) {
-		free_the_file(search_var);
+		freeListNode(search_var);
 		return;
 	} else if (search_var->info->type == FOLDER_NODE) {
 		recursive_rm(search_var);

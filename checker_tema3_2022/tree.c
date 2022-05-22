@@ -239,16 +239,30 @@ void pwd(TreeNode* treeNode) {
 	free(path);
 }
 
+/* This function tells me what is the type that follows to
+be deleted */
+int what_case(ListNode *nodey) {
+	if (!nodey)
+		return 0;
+	if (nodey->info->type == FILE_NODE)
+		return -1;
+	if (nodey->info->type == FOLDER_NODE)
+		return 1;
+	return 0;
+}
+
 /* A function used by rmrec for recursivity use */
 static void recursive_rm(ListNode *dir) {
 	FolderContent *dir_content = (FolderContent *) dir->info->content;
 	ListNode *nodey = dir_content->children->head;
 	while (nodey) {
 		nodey = list_remove_nth_node(dir_content->children, 0);
-		if (nodey->info->type == FILE_NODE)
+		int cases = what_case(nodey);
+		if (cases == -1) {
 			freeListNode(nodey);
-		if (nodey->info->type == FOLDER_NODE)
+		} else if (cases == 1) {
 			recursive_rm(nodey);
+		}
 		nodey = dir_content->children->head;
 	}
 	freeListNode(dir);

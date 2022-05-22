@@ -373,13 +373,13 @@ int main()
 	// the next element must be NULL
 	assert(!currentElement->next);
 
-	// printf("***TEST DIRECTORY***\n");
-	// rmrec(currentFolder, "A");
-	// // check if root is empty
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
-	// currentElement = folderContents->head;
-	// // the list must be empty
-	// assert(!currentElement);
+	printf("***TEST DIRECTORY***\n");
+	rmrec(currentFolder, "A");
+	// check if root is empty
+	folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	currentElement = folderContents->head;
+	// the list must be empty
+	assert(!currentElement);
 
 	printf("***TEST NON-EXISTENT RESOURCE (file 1)***\n");
 	printf("Should print:\nrmrec: failed to remove 'a': No such file or directory\n");

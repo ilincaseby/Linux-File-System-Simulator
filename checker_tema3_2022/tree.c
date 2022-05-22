@@ -359,12 +359,24 @@ static TreeNode* get_to_destination_path(char* cmd, TreeNode* currentNode,
 	return currentNode;
 }
 
+/* Copies the content of `source` to `destination`. */
+static void copy_content(TreeNode* source, TreeNode* destination) {
+	if (destination->type == FOLDER_NODE) {  // the destination is a directory
+		FolderContent* dest_content = destination->content;
+	} else {  // the destination is a file
+		FileContent* dest_content = destination->content;
+		FileContent* src_content = source->content;
+		dest_content->text = strdup(src_content->text);
+	}
+}
 
 void cp(TreeNode* currentNode, char* source, char* destination) {
 	char cmd[3] = "cp";
-    TreeNode* source_file = get_to_source_path(cmd, currentNode, source);
-	TreeNode* destination_file = get_to_destination_path(cmd, currentNode,
-														 destination);
+	// the exception cases are handled by the `get_to_path` functions
+    TreeNode* source_res = get_to_source_path(cmd, currentNode, source);
+	TreeNode* destination_res = get_to_destination_path(cmd, currentNode,
+														destination);
+	copy_content(source_res, destination_res);
 }
 
 void mv(TreeNode* currentNode, char* source, char* destination) {

@@ -16,8 +16,8 @@ void freeList(List* list) {
 	free(list);
 }
 
-void freeListNode(ListNode* listNode) {
-	freeTreeNode(listNode->info);
+void freeList_node(List_node* listNode) {
+	freeTree_node(listNode->info);
 	free(listNode);
 }
 
@@ -34,19 +34,19 @@ void printList(List* list) {
 	}
 
 	// go through each element of the list and print its name
-	ListNode* curr = list->head;
+	List_node* curr = list->head;
 	while (curr) {
 		printf("%s\n", curr->info->name);
 		curr = curr->next;
 	}
 }
 
-ListNode*
-list_add_first(List* list, enum TreeNodeType type, char* name, void* content)
+List_node*
+list_add_first(List* list, enum Tree_nodeType type, char* name, void* content)
 {
 	// allocate memory for the new node and its data
-	ListNode* new = malloc(sizeof(*new));
-	new->info = createTreeNode(name);
+	List_node* new = malloc(sizeof(*new));
+	new->info = create_tree_node(name);
 	new->info->type = type;
 	new->info->content = content;
 
@@ -65,8 +65,8 @@ list_add_first(List* list, enum TreeNodeType type, char* name, void* content)
 }
 
 /* Removes from the list the element at position `n`. */
-ListNode* list_remove_nth_node(List* list, unsigned int n) {
-    ListNode *prev, *curr;
+List_node* list_remove_nth_node(List* list, unsigned int n) {
+    List_node *prev, *curr;
 	// check if the list exists and is not empty
     if (!list || !list->head) {
         return NULL;
@@ -90,8 +90,8 @@ ListNode* list_remove_nth_node(List* list, unsigned int n) {
     return curr;
 }
 
-ListNode* list_find_node(List* list, char* name) {
-	ListNode* curr = list->head;
+List_node* list_find_node(List* list, char* name) {
+	List_node* curr = list->head;
 	// check if the list is empty
 	if (!curr) {
 		return NULL;
@@ -113,7 +113,7 @@ ListNode* list_find_node(List* list, char* name) {
 
 void emptyList(List* list) {
 	while (list->head) {
-		ListNode* removed = list_remove_nth_node(list, 0);
-		freeListNode(removed);
+		List_node* removed = list_remove_nth_node(list, 0);
+		freeList_node(removed);
 	}
 }

@@ -11,30 +11,30 @@
 
 int main()
 {
-	FileTree fileTree;
+	File_tree fileTree;
 
 	printf("----------TEST CREATE----------\n");
-	fileTree = createFileTree(strdup("root"));
+	fileTree = create_file_tree(strdup("root"));
 	assert(fileTree.root != NULL); // check if root was created
 	assert(fileTree.root->content != NULL); // check if root content was created
 	// check if root folder content list was created
-	assert(((FolderContent*) fileTree.root->content)->children != NULL);
+	assert(((Folder_content*) fileTree.root->content)->children != NULL);
 	assert(fileTree.root->type == FOLDER_NODE); // check if root is a directory
 
 	printf("\n");
 
-	TreeNode* currentFolder = fileTree.root;
+	Tree_node* currentFolder = fileTree.root;
 
 	printf("----------TEST touch----------\n");
 	printf("***TEST TOUCH EMPTY FILE***\n");
 	touch(currentFolder, strdup("a"), NO_ARG);
 	// check if the name of the added file is "a"
-	List* folderContents = ((struct FolderContent*)currentFolder->content)->children;
-	ListNode* currentElement = folderContents->head;
+	List* folderContents = ((struct Folder_content*)currentFolder->content)->children;
+	List_node* currentElement = folderContents->head;
 	int check_added_name = strcmp(currentElement->info->name, "a");
 	assert(check_added_name == 0);
 	// check if the file is empty
-	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, NO_ARG);
+	check_added_name = strcmp(((File_content *)currentElement->info->content)->text, NO_ARG);
 	assert(check_added_name == 0);
 	// check if the file added is the only element
 	assert(currentElement->next == NULL);
@@ -46,7 +46,7 @@ int main()
 	check_added_name = strcmp(currentElement->info->name, "b");
 	assert(check_added_name == 0);
 	// check the content of the file
-	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
+	check_added_name = strcmp(((File_content *)currentElement->info->content)->text, "content_b");
 	assert(check_added_name == 0);
 	// check if the next file is a
 	currentElement = currentElement->next;
@@ -58,7 +58,7 @@ int main()
 	touch(currentFolder, strdup("b"), NO_ARG);
 	// check if the content of the file did not change
 	currentElement = folderContents->head;
-	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
+	check_added_name = strcmp(((File_content *)currentElement->info->content)->text, "content_b");
 	assert(check_added_name == 0);
 	// check if no file was added
 	assert(currentElement->next->next == NULL);
@@ -66,7 +66,7 @@ int main()
 	printf("***TEST TOUCH DUPLICATE FILE WITH CONTENT***\n");
 	touch(currentFolder, strdup("b"), strdup("content_b_new"));
 	// check if the content of the file did not change
-	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_b");
+	check_added_name = strcmp(((File_content *)currentElement->info->content)->text, "content_b");
 	assert(check_added_name == 0);
 	// check if no file was added
 	assert(currentElement->next->next == NULL);
@@ -114,7 +114,7 @@ int main()
 	currentFolder = currentElement->info;
 	mkdir(currentFolder, strdup("C"));
 	// check if the name of the added directory is "C"
-	currentElement = ((FolderContent*) currentFolder->content)->children->head;
+	currentElement = ((Folder_content*) currentFolder->content)->children->head;
 	check_added_name = strcmp(currentElement->info->name, "C");
 	assert(check_added_name == 0);
 	// check if the parent of the added directory is A
@@ -123,8 +123,8 @@ int main()
 
 	printf("***TEST ADD NEW FILE LEVEL 1***\n");
 	touch(currentFolder, strdup("file"), strdup("content_file"));
-	currentElement = ((FolderContent*) currentFolder->content)->children->head;
-	check_added_name = strcmp(((FileContent *)currentElement->info->content)->text, "content_file");
+	currentElement = ((Folder_content*) currentFolder->content)->children->head;
+	check_added_name = strcmp(((File_content *)currentElement->info->content)->text, "content_file");
 	assert(check_added_name == 0);
 
 	printf("\n");
@@ -150,7 +150,7 @@ int main()
 	printf("***TEST EMPTY DIRECTORY***\n");
 	currentElement = folderContents->head;
 	currentFolder = currentElement->info; // this is A
-	// currentFolder = ((FolderContent*) currentFolder->content)->children->head->next; // this is C
+	// currentFolder = ((Folder_content*) currentFolder->content)->children->head->next; // this is C
 	printf("Should print:\n \n"); // CHECK TESTS TO SEE WHAT SHOULD BE PRINTED
 	printf("Prints:\n");
 	ls(currentFolder, "C");
@@ -286,7 +286,7 @@ int main()
 	currentFolder = cd(currentFolder, "A");
 	rmdir(currentFolder, "C");
 	// check if only file `file` is left in directory A
-	folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	currentElement = folderContents->head;
 	// the list must not be empty
 	assert(currentElement);
@@ -325,7 +325,7 @@ int main()
 	// the current folder is root
 	rm(currentFolder, "a");
 	// check if root contains only file b and directory A
-	folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	currentElement = folderContents->head;
 	// the list must not be empty
 	assert(currentElement);
@@ -363,7 +363,7 @@ int main()
 	// the current folder is root
 	rmrec(currentFolder, "b");
 	// check if root contains only directory A
-	folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	currentElement = folderContents->head;
 	// the list must not be empty
 	assert(currentElement);
@@ -376,7 +376,7 @@ int main()
 	printf("***TEST DIRECTORY***\n");
 	rmrec(currentFolder, "A");
 	// check if root is empty
-	folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	currentElement = folderContents->head;
 	// the list must be empty
 	assert(!currentElement);
@@ -405,7 +405,7 @@ int main()
 
 
 	printf("----------TEST cp----------\n");
-	currentFolder = ((FolderContent*) fileTree.root->content)->children->head->info;
+	currentFolder = ((Folder_content*) fileTree.root->content)->children->head->info;
 	rm(currentFolder, "file");
 	rm(currentFolder, "d");
 	rm(currentFolder, "B");
@@ -431,27 +431,27 @@ int main()
 	// tree(currentFolder, NO_ARG);
 	// cp(currentFolder, "a", "b");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
 	// // check that contents of `b` have changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that b's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "root");
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have not changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_d");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_d");
 	// assert(check_added_name == 0);
 	// currentElement = currentElement->next; // this is `B`
 	// check_added_name = strcmp(currentElement->info->name, "B");
@@ -460,7 +460,7 @@ int main()
 	// currentElement = currentElement->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
@@ -475,24 +475,24 @@ int main()
 	// currentFolder = fileTree.root;
 	// cp(currentFolder, "a", "A/d");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
 	// // check that contents of `b` have not changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that d's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "A");
@@ -505,7 +505,7 @@ int main()
 	// currentElement = currentElement->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
@@ -520,24 +520,24 @@ int main()
 	// currentFolder = fileTree.root;
 	// cp(currentFolder, "a", "A/../A/c");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
 	// // check that contents of `b` have not changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have not changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check B
 	// currentElement = currentElement->next; // this is `B`
@@ -547,7 +547,7 @@ int main()
 	// currentElement = currentElement->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that c's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "A");
@@ -573,27 +573,27 @@ int main()
 	// currentFolder = fileTree.root;
 	// cp(currentFolder, "A/d", "b");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
 	// // check that contents of `b` have changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that b's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "root");
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have not changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check B
 	// currentElement = currentElement->next; // this is `B`
@@ -603,7 +603,7 @@ int main()
 	// currentElement = currentElement->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
@@ -621,27 +621,27 @@ int main()
 	// printf("Prints:\n");
 	// cp(currentFolder, "A", "b");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
 	// // check that contents of `b` have not changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that b's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "root");
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have not changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check B
 	// currentElement = currentElement->next; // this is `B`
@@ -651,7 +651,7 @@ int main()
 	// currentElement = currentElement->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
@@ -669,27 +669,27 @@ int main()
 	// printf("Prints:\n");
 	// cp(currentFolder, "b", "A/P/B");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
 	// // check that contents of `b` have not changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that b's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "root");
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have not changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check B
 	// currentElement = currentElement->next; // this is `B`
@@ -699,7 +699,7 @@ int main()
 	// currentElement = currentElement->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
@@ -715,27 +715,27 @@ int main()
 	// currentFolder = fileTree.root;
 	// cp(currentFolder, "b", "A/B");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
 	// // check that contents of `b` have not changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that b's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "root");
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have not changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_d");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_d");
 	// assert(check_added_name == 0);
 	// // check B
 	// currentElement = currentElement->next; // this is `B`
@@ -743,22 +743,22 @@ int main()
 	// assert(check_added_name == 0);
 	// // check that file b was added to B
 	// currentFolder = cd(currentFolder, "B");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head; // this is `b`
 	// // check that b's parent is B
 	// check_added_name = strcmp(currentElement->info->parent->name, "B");
 	// assert(check_added_name == 0);
 	// // check that b is empty
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// // check that there is no element after b
 	// assert(!currentElement->next);
 	// // check that contents of `c` have not changed
 	// currentFolder = cd(currentFolder, ".."); // this is A
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
@@ -775,9 +775,9 @@ int main()
 	// currentFolder = fileTree.root;
 	// cp(currentFolder, "a", "A/B");
 	// // check that contents of `a` have not changed
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// assert(check_added_name == 0);
 	// // check that a's parent did not change
 	// check_added_name = strcmp(currentElement->info->parent->name, "root");
@@ -786,16 +786,16 @@ int main()
 	// assert(!currentElement->next);
 	// // check that contents of `b` have not changed
 	// currentElement = folderContents->head->next; // this is `b`
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check the contents of A
 	// currentFolder = cd(currentFolder, "A");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// // check that contents of `d` have not changed
 	// currentElement = folderContents->head; // this is `d`
 	// check_added_name = strcmp(currentElement->info->name, "d");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_d");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_d");
 	// assert(check_added_name == 0);
 	// // check B
 	// currentElement = currentElement->next; // this is `B`
@@ -803,7 +803,7 @@ int main()
 	// assert(check_added_name == 0);
 	// // check that file a was added to B
 	// currentFolder = cd(currentFolder, "B");
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head; // this is `a`
 	// check_added_name = strcmp(currentElement->info->name, "a");
 	// assert(check_added_name == 0);
@@ -811,22 +811,22 @@ int main()
 	// check_added_name = strcmp(currentElement->info->parent->name, "B");
 	// assert(check_added_name == 0);
 	// // check that a is not empty
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, "content_a");
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, "content_a");
 	// // check that file b did not change
 	// currentElement = currentElement->next; // this is `b`
 	// check_added_name = strcmp(currentElement->info->name, "b");
 	// assert(check_added_name == 0);
 	// // check that b is empty
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// // check that no element is after b
 	// assert(!currentElement->next);
 	// // check that contents of `c` have not changed
 	// currentFolder = cd(currentFolder, ".."); // this is A
-	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
+	// folderContents = ((struct Folder_content*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `c`
 	// check_added_name = strcmp(currentElement->info->name, "c");
 	// assert(check_added_name == 0);
-	// check_added_name = strcmp(((FileContent*) currentElement->info->content)->text, NO_ARG);
+	// check_added_name = strcmp(((File_content*) currentElement->info->content)->text, NO_ARG);
 	// assert(check_added_name == 0);
 	// // check that no element was added
 	// assert(!currentElement->next);
@@ -851,7 +851,7 @@ int main()
 	// printf("\n");
 
 
-	freeTree(fileTree);
+	free_tree(fileTree);
 	printf("--------------------------SUCCESS! :)--------------------------\n");
 	printf("DON'T FORGET TO CHECK PRINTS ABOVE!\n");
 	printf("DON'T FORGET TO CHECK MEMORY LEAKS USING `make valgrind_check`!\n");

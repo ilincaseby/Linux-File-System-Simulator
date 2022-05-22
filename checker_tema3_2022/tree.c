@@ -478,7 +478,7 @@ static void copy_content(TreeNode* source, TreeNode* destination) {
 
 		if (source->type == FILE_NODE) {  // copy a file to a directory
 			char* src_text = ((FileContent*) source->content)->text;
-			FileContent* content_copy = createFileContent(strdup(src_text);
+			FileContent* content_copy = createFileContent(strdup(src_text));
 			ListNode* new_node = list_add_first(dest_content->children,
 												source->type, source->name,
 												content_copy);

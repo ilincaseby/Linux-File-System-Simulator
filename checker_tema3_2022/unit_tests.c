@@ -658,9 +658,9 @@ int main()
 	// // a - content_a
 	// printf("***TEST COPY TO INVALID PATH (unexistent directory)***\n");
 	// currentFolder = fileTree.root;
-	// printf("Should print:\ncp: failed to access 'q': Not a directory\n");
+	// printf("Should print:\ncp: failed to access 'A/P/B': Not a directory\n");
 	// printf("Prints:\n");
-	// cp(currentFolder, "b", "q");
+	// cp(currentFolder, "b", "A/P/B");
 	// // check that contents of `a` have not changed
 	// folderContents = ((struct FolderContent*)currentFolder->content)->children;
 	// currentElement = folderContents->head->next->next; // this is `a`

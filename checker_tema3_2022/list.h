@@ -40,4 +40,7 @@ ListNode* list_find_node(List* list, char* name);
 /* Removes all the elements of a list. */
 void emptyList(List* list);
 
+/* Removes from the list the element at position `n`. */
+ListNode* list_remove_nth_node(List* list, unsigned int n);
+
 #endif  // LIST_H

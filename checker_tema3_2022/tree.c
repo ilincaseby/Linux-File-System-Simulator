@@ -527,6 +527,122 @@ void cp(Tree_node* current_node, char* source, char* destination) {
 	copy_content(source_res, destination_res);
 }
 
+/* Returns the element from the destination path. */
+static Tree_node* get_to_destination_path_mv(char* cmd, Tree_node* current_node,
+										 char* dest, int cases) {
+	char* path_copy = strdup(dest);
+	char* new_res_name = strtok(path_copy, "/");
+	while (new_res_name != NULL) {
+		List* contents_list = ((Folder_content*) current_node->content)->children;
+		// change to parent directory
+		if (strcmp(new_res_name, PARENT_DIR) == 0) {
+			current_node = current_node->parent;
+			new_res_name = strtok(NULL, "/");
+			continue;
+		}
+
+		List_node* node = list_find_node(contents_list, new_res_name);
+		// path does not exist
+		if (!node) {
+			// if `node` is not at the end of the file the path is invalid
+			// make a copy of the current name
+			char* new_res_name_copy = new_res_name;
+			if ((new_res_name = strtok(NULL, "/"))) {
+				printf("%s: failed to access '%s': Not a directory\n", cmd,
+					   dest);
+				current_node = NULL;
+				break;
+			}
+
+			// the path is valid; create the new file
+			if (cases == 0) {
+				touch(current_node, strdup(new_res_name_copy), NO_ARG);
+				contents_list = ((Folder_content*) current_node->content)->children;
+				current_node = contents_list->head->info;
+				break;
+			} else if (cases == 1) {
+				mkdir(current_node, strdup(new_res_name_copy));
+				current_node = ((Folder_content *)current_node->content)
+								->children->head->info;
+				break;
+			}
+		}
+
+		// path exists and is a file
+		if (node->info->type == FILE_NODE) {
+			// if the file is not at the end of the path, the path is invalid
+			if ((new_res_name = strtok(NULL, "/"))) {
+				printf("%s: failed to access '%s': Not a directory\n", cmd,
+					   dest);
+				current_node = NULL;
+				break;
+			}
+
+			// the path is valid
+			current_node = node->info;
+			break;
+		}
+		// path exists and is a directory
+		current_node = node->info;
+		new_res_name = strtok(NULL, "/");
+	}
+
+	free(path_copy);
+	return current_node;
+}
+
 void mv(Tree_node* current_node, char* source, char* destination) {
-    // TODO
+	char cmd[3] = "mv";
+	/* Condition to kmow if it is a mv file-file, dir-dir, file-dir */
+	int condition = 0;
+	Tree_node *source_res = get_to_source_path(cmd, current_node, source);
+	// this var tells function if it is needed to create something
+	// what should that be? Because if it's a file, then create a new file
+	// if it is a dir, then create a new director
+	int what_should_i_create_if_needed = 0;
+	if (source_res->type == FOLDER_NODE)
+		what_should_i_create_if_needed = 1;
+	Tree_node *destination_res = get_to_destination_path_mv(cmd, current_node,
+									destination, what_should_i_create_if_needed);
+	// The conditions
+	if (source_res->type == FILE_NODE && destination_res->type == FILE_NODE)
+		condition = 1;
+	if (source_res->type == FILE_NODE && destination_res->type == FOLDER_NODE)
+		condition = 2;
+	if (source_res->type == FOLDER_NODE && destination_res->type == FOLDER_NODE)
+		condition = 3;
+	// go to the parent of the search folder
+	// and take what I need out
+	Tree_node *p_source = source_res->parent;
+	Folder_content *ps_f = (Folder_content *) p_source->content;
+	List *listy = ps_f->children;
+	int index = 0;
+	List_node *nodey = listy->head;
+	while (nodey) {
+		if (nodey->info = source_res) {
+			break;
+		}
+		index++;
+		nodey = nodey->next;
+	}
+	nodey = list_remove_nth_node(listy, index);
+	// move the pointers in the right directions
+	if (!condition) {
+		return;
+	} else if (condition == 1) {
+		Tree_node *aux = nodey->info;
+		free(((File_content *) destination_res->content)->text);
+		((File_content *) destination_res->content)->text =
+		((File_content *) aux->content)->text;
+		free(aux->content);
+		free(aux->name);
+		free(aux);
+		free(nodey);
+	} else if (condition == 2 || condition == 3) {
+		List_node *aux = ((Folder_content *) destination_res->content)
+					->children->head;
+		nodey->next = aux;
+		((Folder_content *) destination_res->content)->children->head =
+		nodey;
+	}
 }

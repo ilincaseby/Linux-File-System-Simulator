@@ -20,7 +20,7 @@ void execute_command(char *cmd, char *arg1, char *arg2) {
     printf("$ %s %s %s\n", cmd, arg1, arg2);
 }
 
-TreeNode* process_command(TreeNode* current_folder,
+Tree_node* process_command(Tree_node* current_folder,
         char cmd[3][TOKEN_MAX_LEN], int token_count) {
     execute_command(cmd[0], cmd[1], cmd[2]);
     if (!strcmp(cmd[0], LS)) {
@@ -57,8 +57,8 @@ int main() {
     char cmd[3][TOKEN_MAX_LEN];
     char *token;
 
-    FileTree file_tree = create_file_tree(strdup("root"));
-    TreeNode* current_folder = file_tree.root;
+    File_tree file_tree = create_file_tree(strdup("root"));
+    Tree_node* current_folder = file_tree.root;
 
     while (fgets(line, sizeof(line), stdin) != NULL) {
         line[strlen(line)-1] = 0;

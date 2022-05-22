@@ -75,6 +75,7 @@ void rmdir(TreeNode* currentNode, char* folderName);
 
 void rmrec(TreeNode* currentNode, char* resourceName);
 
+/* Copies the file from the source path to the destination path. */
 void cp(TreeNode* currentNode, char* source, char* destination);
 
 void mv(TreeNode* currentNode, char* source, char* destination);

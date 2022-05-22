@@ -487,6 +487,10 @@ static TreeNode* get_to_destination_path(char* cmd, TreeNode* currentNode,
 
 /* Copies the content of `source` to `destination`. */
 static void copy_content(TreeNode* source, TreeNode* destination) {
+	if (!source || !destination) {
+		return;
+	}
+
 	if (destination->type == FOLDER_NODE) {  // the destination is a directory
 		FolderContent* dest_content = destination->content;
 

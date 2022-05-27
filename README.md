@@ -52,6 +52,11 @@ Move the file or directory from `<source_path>` at `<destination_path>`. If the 
 
 ## Implementation details
 
+The project is divided into three different sections:
+- the `list` section (containing `list.c` and `list.h`), where the functionality of a simple linked list is implemented;
+- the `tree` section (containing `tree.c` and `tree.h`), where the functionality of a file tree is implemented;
+- the `main` section (containing `main.c`), where the I/O operations are handled.
+
 ## Notes
 
 The biggest advantage of this homework was learning to learn with a teammate using git/GitHub. We learned a lot about the push/pull process and conflict resolution.

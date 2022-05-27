@@ -4,6 +4,7 @@ This project implements the Linux file tree system in C, along with bash command
 
 
 ## Commands implemented
+
 1. `touch <filename> [filecontent]`
 
 Add the file `<filename>` with content `[filecontent]` to the current path. If the `[filecontent]` argument is missing, the file is created with no content. If a file with the name `<filename>` already exists the command does nothing.
@@ -52,3 +53,9 @@ Move the file or directory from `<source_path>` at `<destination_path>`. If the 
 ## Implementation details
 
 ## Notes
+
+The biggest advantage of this homework was learning to learn with a teammate using git/GitHub. We learned a lot about the push/pull process and conflict resolution.
+
+The given skeleton should have taken into account the use of the -std=c99 flag when compiling. (Originally, it contained the `strdup` function which is not in the C standard library. This should have been avoided by the team responsible for the homework.)
+
+Overall, it was a very interesting homework. We never thought implementing a Linux file system could be so.. manageable! And fun! These homeworks that have a clear applicability in real life are great!

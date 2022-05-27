@@ -70,15 +70,19 @@ void tree(Tree_node* currentNode, char* arg);
 /* Prints the absolute path to the current working directory. */
 void pwd(Tree_node* treeNode);
 
-void rm(Tree_node* currentNode, char* fileName);
-
+/* Removes an empty directory. */
 void rmdir(Tree_node* currentNode, char* folderName);
 
+/* Deletes a file contained by the current directory. */
+void rm(Tree_node* currentNode, char* fileName);
+
+/* Removes a file or a directory, along with its contents. */
 void rmrec(Tree_node* currentNode, char* resourceName);
 
-/* Copies the file from the source path to the destination path. */
+/* Copies a file from the source path to the destination path. */
 void cp(Tree_node* currentNode, char* source, char* destination);
 
+/* Moves a file or directory from the source path to the destination path. */
 void mv(Tree_node* currentNode, char* source, char* destination);
 
 #endif  // TREE_H

@@ -621,7 +621,7 @@ void mv(Tree_node *current_node, char *source, char *destination) {
 	if (!dest)
 		return;
 	if (dest->type == FILE_NODE && node_out->type == FOLDER_NODE) {
-		printf("wtf bro\n");
+		printf("not allowed");
 		return;
 	} else if (dest->type == FILE_NODE && node_out->type == FILE_NODE) {
 		free(((File_content *) dest->content)->text);

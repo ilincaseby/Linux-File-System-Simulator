@@ -76,7 +76,7 @@ int main() {
         current_folder = process_command(current_folder, cmd, token_idx);
     }
 
-    free_tree(file_tree);
+    tree_free(file_tree);
 
     return 0;
 }

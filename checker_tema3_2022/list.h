@@ -43,8 +43,4 @@ void list_empty(List* list);
 /* Removes from the list the element at position `n`. */
 List_node* list_remove_nth_node(List* list, unsigned int n);
 
-/* This function tells me what is the type that follows to
-be deleted */
-int what_case(List_node *nodey);
-
 #endif  // LIST_H

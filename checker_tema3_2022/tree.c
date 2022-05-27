@@ -78,7 +78,7 @@ void tree_node_free(Tree_node* tree_node) {
 	tree_node = NULL;
 }
 
-void free_tree(File_tree file_tree) {
+void tree_free(File_tree file_tree) {
 	tree_node_free(file_tree.root);
 }
 
@@ -244,9 +244,8 @@ void pwd(Tree_node* tree_node) {
 	free(path);
 }
 
-/* This function tells me what is the type that follows to
-be deleted */
-int what_case(List_node* nodey) {
+/* This function tells me what is the type that follows to be deleted. */
+static int what_case(List_node* nodey) {
 	if (!nodey)
 		return 0;
 	if (nodey->info->type == FILE_NODE)
@@ -256,7 +255,7 @@ int what_case(List_node* nodey) {
 	return 0;
 }
 
-/* A function used by rmrec for recursivity use */
+/* A function used by rmrec for recursivity use. */
 static void recursive_rm(List_node* dir) {
 	Folder_content* dir_content = (Folder_content*) dir->info->content;
 	List_node* nodey = dir_content->children->head;

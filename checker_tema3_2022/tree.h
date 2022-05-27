@@ -48,7 +48,7 @@ File_tree file_tree_create(char* rootFolderName);
 void tree_node_free(Tree_node* treeNode);
 
 /* Frees the memory allocated for a File_tree. */
-void free_tree(File_tree fileTree);
+void tree_free(File_tree fileTree);
 
 /* Adds a file with name `fileName` and content `fileContent` to the current
 directory. */

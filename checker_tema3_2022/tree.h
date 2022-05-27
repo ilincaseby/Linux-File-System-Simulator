@@ -39,13 +39,13 @@ struct File_tree {
 char* my_strdup(char* str);
 
 /* Creates a Tree_node* with name `treeNodeName`. */
-Tree_node* create_tree_node(char* treeNodeName);
+Tree_node* tree_node_create(char* treeNodeName);
 
 /* Creates a File_tree with root `rootFolderName`. */
-File_tree create_file_tree(char* rootFolderName);
+File_tree file_tree_create(char* rootFolderName);
 
 /* Frees the memory allocated for a Tree_node. */
-void freeTree_node(Tree_node* treeNode);
+void tree_node_free(Tree_node* treeNode);
 
 /* Frees the memory allocated for a File_tree. */
 void free_tree(File_tree fileTree);

@@ -5,23 +5,23 @@
 #include "list.h"
 #include "tree.h"
 
-List* createList() {
+List* list_create() {
     List* list = malloc(sizeof(*list));
 	list->head = NULL;
 	return list;
 }
 
-void freeList(List* list) {
+void list_free(List* list) {
 	assert(!list->head);  // check if the list is empty
 	free(list);
 }
 
-void freeList_node(List_node* listNode) {
-	freeTree_node(listNode->info);
+void list_free_node(List_node* listNode) {
+	tree_node_free(listNode->info);
 	free(listNode);
 }
 
-void printList(List* list) {
+void list_print(List* list) {
 	// check if the list exists
 	if (!list) {
 		return;
@@ -46,7 +46,7 @@ list_add_first(List* list, enum Tree_nodeType type, char* name, void* content)
 {
 	// allocate memory for the new node and its data
 	List_node* new = malloc(sizeof(*new));
-	new->info = create_tree_node(name);
+	new->info = tree_node_create(name);
 	new->info->type = type;
 	new->info->content = content;
 
@@ -111,9 +111,9 @@ List_node* list_find_node(List* list, char* name) {
 	return NULL;
 }
 
-void emptyList(List* list) {
+void list_empty(List* list) {
 	while (list->head) {
 		List_node* removed = list_remove_nth_node(list, 0);
-		freeList_node(removed);
+		list_free_node(removed);
 	}
 }

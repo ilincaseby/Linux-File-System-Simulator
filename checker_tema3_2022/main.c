@@ -57,7 +57,7 @@ int main() {
     char cmd[3][TOKEN_MAX_LEN];
     char *token;
 
-    File_tree file_tree = create_file_tree(my_strdup("root"));
+    File_tree file_tree = file_tree_create(my_strdup("root"));
     Tree_node* current_folder = file_tree.root;
 
     while (fgets(line, sizeof(line), stdin) != NULL) {

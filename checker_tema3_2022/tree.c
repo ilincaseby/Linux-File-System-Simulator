@@ -116,7 +116,8 @@ void ls(Tree_node* current_node, char* arg) {
 	Tree_node* resource = list_node->info;
 	// the argument is valid and is a file
 	if (resource->type == FILE_NODE) {
-		printf("%s: %s\n", resource->name, ((File_content*) resource->content)->text);
+		printf("%s: %s\n", resource->name,
+			   ((File_content*) resource->content)->text);
 		return;
 	}
 	// the argument is valid and is a directory
@@ -129,7 +130,8 @@ void mkdir(Tree_node* current_node, char* folder_name) {
     List_node* folder = list_find_node(contents_list, folder_name);
 	// check if the folder already exists
 	if (folder) {
-		printf("mkdir: cannot create directory '%s': File exists\n", folder_name);
+		printf("mkdir: cannot create directory '%s': File exists\n",
+			   folder_name);
 		free(folder_name);
 		return;
 	}
@@ -147,7 +149,8 @@ static Tree_node* get_to_path(Tree_node* current_node, char* path,
 	char* path_copy = my_strdup(path);
 	char* new_dir_name = strtok(path_copy, "/");
 	while (new_dir_name != NULL) {
-		List* contents_list = ((Folder_content*) current_node->content)->children;
+		List* contents_list = ((Folder_content*)
+							   current_node->content)->children;
 		// change to parent directory
 		if (strcmp(new_dir_name, PARENT_DIR) == 0) {
 			current_node = current_node->parent;
@@ -270,41 +273,42 @@ static void recursive_rm(List_node* dir) {
 	list_free_node(dir);
 }
 
-void rmrec(Tree_node* current_node, char* resource_name) {
+void rmdir(Tree_node* current_node, char* folder_name) {
     if (current_node->type == FILE_NODE)
 		return;
-	Folder_content* dir_content = (Folder_content*) current_node->content;
-	List_node* search_var = list_find_node(dir_content->children,
-										   resource_name);
-	// conditions and if it is a file, then simply delete
-	// it and return back, if it's a folder, recursive_rm
-	// have a role here
+	Folder_content* what_folder_contains = (Folder_content*)
+											current_node->content;
+	List_node* search_var = list_find_node(what_folder_contains->children,
+										   folder_name);
+	// conditions
 	if (!search_var) {
-		printf("rmrec: failed to remove '%s': No such file or directory\n",
-			   resource_name);
+		printf("rmdir: failed to remove '%s': No such file or directory\n",
+			   folder_name);
+		return;
+	} else if (search_var->info->type == FILE_NODE) {
+		printf("rmdir: failed to remove '%s': Not a directory\n", folder_name);
+		return;
+	}
+	Folder_content* folder = (Folder_content*) search_var->info->content;
+	if (folder->children->head) {
+		printf("rmdir: failed to remove '%s': Directory not empty\n",
+			   folder_name);
 		return;
 	}
 	int index = 0;
-	search_var = dir_content->children->head;
-	// take out the node contained
+	search_var = what_folder_contains->children->head;
+	// take out from the list the folder
 	while (search_var) {
-		if (strcmp(resource_name, search_var->info->name) == 0)
+		if (strcmp(folder_name, search_var->info->name) == 0)
 			break;
 		index++;
 		search_var = search_var->next;
 	}
-	search_var = list_remove_nth_node(dir_content->children, index);
-	// there are two case, one for file, one for directory
-	if (search_var->info->type == FILE_NODE) {
-		list_free_node(search_var);
-		return;
-	} else if (search_var->info->type == FOLDER_NODE) {
-		recursive_rm(search_var);
-		return;
-	}
+	search_var = list_remove_nth_node(what_folder_contains->children, index);
+	// free the whole memory allocated
+	list_free_node(search_var);
 }
 
-/* Delete a file contained by the current directory */
 void rm(Tree_node* current_node, char* file_name) {
 	// check if the folder is actually a file
 	// not very likely but defensive
@@ -342,40 +346,38 @@ void rm(Tree_node* current_node, char* file_name) {
 	}
 }
 
-void rmdir(Tree_node* current_node, char* folder_name) {
+void rmrec(Tree_node* current_node, char* resource_name) {
     if (current_node->type == FILE_NODE)
 		return;
-	Folder_content* what_folder_contains = (Folder_content*)
-											current_node->content;
-	List_node* search_var = list_find_node(what_folder_contains->children,
-										   folder_name);
-	// conditions
+	Folder_content* dir_content = (Folder_content*) current_node->content;
+	List_node* search_var = list_find_node(dir_content->children,
+										   resource_name);
+	// conditions and if it is a file, then simply delete
+	// it and return back, if it's a folder, recursive_rm
+	// have a role here
 	if (!search_var) {
-		printf("rmdir: failed to remove '%s': No such file or directory\n",
-			   folder_name);
-		return;
-	} else if (search_var->info->type == FILE_NODE) {
-		printf("rmdir: failed to remove '%s': Not a directory\n", folder_name);
-		return;
-	}
-	Folder_content* folder = (Folder_content*) search_var->info->content;
-	if (folder->children->head) {
-		printf("rmdir: failed to remove '%s': Directory not empty\n",
-			   folder_name);
+		printf("rmrec: failed to remove '%s': No such file or directory\n",
+			   resource_name);
 		return;
 	}
 	int index = 0;
-	search_var = what_folder_contains->children->head;
-	// take out from the list the folder
+	search_var = dir_content->children->head;
+	// take out the node contained
 	while (search_var) {
-		if (strcmp(folder_name, search_var->info->name) == 0)
+		if (strcmp(resource_name, search_var->info->name) == 0)
 			break;
 		index++;
 		search_var = search_var->next;
 	}
-	search_var = list_remove_nth_node(what_folder_contains->children, index);
-	// free the whole memory allocated
-	list_free_node(search_var);
+	search_var = list_remove_nth_node(dir_content->children, index);
+	// there are two case, one for file, one for directory
+	if (search_var->info->type == FILE_NODE) {
+		list_free_node(search_var);
+		return;
+	} else if (search_var->info->type == FOLDER_NODE) {
+		recursive_rm(search_var);
+		return;
+	}
 }
 
 /* Returns the element from the source path. */

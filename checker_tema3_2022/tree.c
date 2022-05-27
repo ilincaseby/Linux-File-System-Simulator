@@ -7,9 +7,6 @@
 #define TREE_CMD_INDENT_SIZE 4
 #define NO_ARG ""
 #define PARENT_DIR ".."
-#define FREE_CONTENT(content) ({if (strcmp(content, NO_ARG)) { \
-									free(content); \
-								}})
 #define NO_ARGUMENT (!strcmp(arg, NO_ARG))
 #define CD_ERROR ("cd: no such file or directory:")
 #define TREE_ERROR ("[error opening dir]\n")
@@ -54,7 +51,7 @@ File_tree create_file_tree(char* root_folder_name) {
 
 /* Frees the memory allocated for a file. */
 static void freeFile_content(File_content* file_content) {
-	FREE_CONTENT(file_content->text);
+	free(file_content->text);
 	free(file_content);
 }
 
@@ -98,7 +95,7 @@ void touch(Tree_node* current_node, char* file_name, char* file_content) {
 	}
 	// the node is in the list; command does nothing
 	free(file_name);
-	FREE_CONTENT(file_content);
+	free(file_content);
 }
 
 void ls(Tree_node* current_node, char* arg) {
@@ -500,9 +497,9 @@ static void copy_content(Tree_node* source, Tree_node* destination) {
 
 		if (source->type == FILE_NODE) {  // copy a file to a directory
 			char* src_text = ((File_content*) source->content)->text;
-			File_content* content_copy = createFile_content(src_text);
+			File_content* content_copy = createFile_content(my_strdup(src_text));
 			List_node* new_node = list_add_first(dest_content->children,
-												source->type, source->name,
+												source->type, my_strdup(source->name),
 												content_copy);
 			new_node->info->parent = destination;
 		} else {  // copy a directory to a directory
@@ -510,7 +507,7 @@ static void copy_content(Tree_node* source, Tree_node* destination) {
 			List_node* src_node = src_content->children->head;
 			Folder_content* content_copy = createFolder_content();
 			List_node* new_node = list_add_first(dest_content->children,
-												source->type, source->name,
+												source->type, my_strdup(source->name),
 												content_copy);
 			new_node->info->parent = destination;
 			Tree_node* new_destination = new_node->info;
@@ -522,7 +519,8 @@ static void copy_content(Tree_node* source, Tree_node* destination) {
 	} else {  // the destination is a file
 		File_content* dest_content = destination->content;
 		File_content* src_content = source->content;
-		dest_content->text = src_content->text;
+		free(dest_content->text);
+		dest_content->text = my_strdup(src_content->text);
 	}
 }
 
@@ -535,70 +533,6 @@ void cp(Tree_node* current_node, char* source, char* destination) {
 	copy_content(source_res, destination_res);
 }
 
-/* Returns the element from the destination path. */
-static Tree_node* get_to_destination_path_mv(char* cmd, Tree_node* current_node,
-										 char* dest, int cases) {
-	char* path_copy = my_strdup(dest);
-	char* new_res_name = strtok(path_copy, "/");
-	while (new_res_name != NULL) {
-		List* contents_list = ((Folder_content*) current_node->content)->children;
-		// change to parent directory
-		if (strcmp(new_res_name, PARENT_DIR) == 0) {
-			current_node = current_node->parent;
-			new_res_name = strtok(NULL, "/");
-			continue;
-		}
-
-		List_node* node = list_find_node(contents_list, new_res_name);
-		// path does not exist
-		if (!node) {
-			// if `node` is not at the end of the file the path is invalid
-			// make a copy of the current name
-			char* new_res_name_copy = new_res_name;
-			if ((new_res_name = strtok(NULL, "/"))) {
-				printf("%s: failed to access '%s': Not a directory\n", cmd,
-					   dest);
-				current_node = NULL;
-				break;
-			}
-
-			// the path is valid; create the new file
-			if (cases == 0) {
-				touch(current_node, my_strdup(new_res_name_copy), NO_ARG);
-				contents_list = ((Folder_content*) current_node->content)->children;
-				current_node = contents_list->head->info;
-				break;
-			} else if (cases == 1) {
-				mkdir(current_node, my_strdup(new_res_name_copy));
-				current_node = ((Folder_content *)current_node->content)
-								->children->head->info;
-				break;
-			}
-		}
-
-		// path exists and is a file
-		if (node->info->type == FILE_NODE) {
-			// if the file is not at the end of the path, the path is invalid
-			if ((new_res_name = strtok(NULL, "/"))) {
-				printf("%s: failed to access '%s': Not a directory\n", cmd,
-					   dest);
-				current_node = NULL;
-				break;
-			}
-
-			// the path is valid
-			current_node = node->info;
-			break;
-		}
-		// path exists and is a directory
-		current_node = node->info;
-		new_res_name = strtok(NULL, "/");
-	}
-
-	free(path_copy);
-	return current_node;
-}
-
 void mv(Tree_node* current_node, char* source, char* destination) {
 	char cmd[3] = "mv";
 	// the exception cases are handled by the `get_to_path` functions
@@ -606,51 +540,9 @@ void mv(Tree_node* current_node, char* source, char* destination) {
 	Tree_node* destination_res = get_to_destination_path(cmd, current_node,
 														destination);
 	copy_content(source_res, destination_res);
-	rmrec(source_res, current_node->name);
+	if (source_res->type == FILE_NODE) {
+		rm(source_res->parent, source_res->name);
+	} else {
+		rmrec(source_res->parent, source_res->name);
+	}
 }
-
-// void mv(Tree_node *current_node, char *source, char *destination) {
-// 	char cmd[3] = "mv";
-// 	Tree_node *source_res = get_to_source_path(cmd, current_node, source);
-// 	if (!source_res)
-// 		return;
-// 	Tree_node *node_out = source_res;
-// 	source_res = source_res->parent;
-// 	List *dir_list = ((Folder_content *) source_res->content)->children;
-// 	List_node *node = dir_list->head;
-// 	List_node *extract;
-// 	if (node->info == node_out) {
-// 		dir_list->head = node->next;
-// 		extract = node;
-// 	} else if (node->info != node_out) {
-// 		while (node->next->info != node_out) {
-// 			node = node->next;
-// 		}
-// 		extract = node->next;
-// 		node->next = node->next->next;
-// 	}
-// 	int the_case_scenario = 0;
-// 	if (node_out->type == FOLDER_NODE)
-// 		the_case_scenario = 1;
-// 	Tree_node *dest = get_to_destination_path_mv(cmd, current_node,
-// 					destination, the_case_scenario);
-// 	if (!dest)
-// 		return;
-// 	if (dest->type == FILE_NODE && node_out->type == FOLDER_NODE) {
-// 		printf("not allowed");
-// 		return;
-// 	} else if (dest->type == FILE_NODE && node_out->type == FILE_NODE) {
-// 		free(((File_content *) dest->content)->text);
-// 		((File_content *) dest->content)->text = ((File_content *)
-// 									node_out->content)->text;
-// 		free(extract->info->content);
-// 		free(extract->info->name);
-// 		free(extract->info);
-// 		free(extract);
-// 	} else{
-// 		List *list = ((Folder_content *) dest->content)->children;
-// 		extract->next = list->head;
-// 		list->head = extract;
-// 		extract->info->parent = dest;
-// 	}
-// }

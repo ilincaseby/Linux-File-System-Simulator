@@ -85,7 +85,8 @@ void touch(Tree_node* current_node, char* file_name, char* file_content) {
 	List_node* new_node = list_find_node(contents_list, file_name);
 	if (new_node == NULL) {  // the node is not in the list
 		File_content* new_file_content = createFile_content(file_content);
-		new_node = list_add_first(contents_list, FILE_NODE, file_name, new_file_content);
+		new_node = list_add_first(contents_list, FILE_NODE,
+				file_name, new_file_content);
 		new_node->info->parent = current_node;
 		return;
 	}
@@ -125,7 +126,7 @@ void mkdir(Tree_node* current_node, char* folder_name) {
     List_node* folder = list_find_node(contents_list, folder_name);
 	// check if the folder already exists
 	if (folder) {
-		printf("mkdir: cannot create directory '%s’: File exists\n", folder_name);
+		printf("mkdir: cannot create directory '%s': File exists\n", folder_name);
 		free(folder_name);
 		return;
 	}
@@ -186,7 +187,8 @@ Tree_node* cd(Tree_node* current_node, char* path) {
 
 /* Prints the contents of the current directory indented by level. */
 static void
-print_tree_levels(Tree_node* current_node, int level, int* dir_no, int* file_no) {
+print_tree_levels(Tree_node* current_node,
+				int level, int* dir_no, int* file_no) {
 	List* contents_list = ((Folder_content*) current_node->content)->children;
 	List_node* curr = contents_list->head;
 	while (curr) {
@@ -494,7 +496,7 @@ static void copy_content(Tree_node* source, Tree_node* destination) {
 			char* src_text = ((File_content*) source->content)->text;
 			File_content* content_copy = createFile_content(strdup(src_text));
 			List_node* new_node = list_add_first(dest_content->children,
-												source->type, source->name,
+												source->type, strdup(source->name),
 												content_copy);
 			new_node->info->parent = destination;
 		} else {  // copy a directory to a directory
@@ -591,58 +593,48 @@ static Tree_node* get_to_destination_path_mv(char* cmd, Tree_node* current_node,
 	return current_node;
 }
 
-void mv(Tree_node* current_node, char* source, char* destination) {
+void mv(Tree_node *current_node, char *source, char *destination) {
 	char cmd[3] = "mv";
-	/* Condition to kmow if it is a mv file-file, dir-dir, file-dir */
-	int condition = 0;
 	Tree_node *source_res = get_to_source_path(cmd, current_node, source);
-	// this var tells function if it is needed to create something
-	// what should that be? Because if it's a file, then create a new file
-	// if it is a dir, then create a new director
-	int what_should_i_create_if_needed = 0;
-	if (source_res->type == FOLDER_NODE)
-		what_should_i_create_if_needed = 1;
-	Tree_node *destination_res = get_to_destination_path_mv(cmd, current_node,
-									destination, what_should_i_create_if_needed);
-	// The conditions
-	if (source_res->type == FILE_NODE && destination_res->type == FILE_NODE)
-		condition = 1;
-	if (source_res->type == FILE_NODE && destination_res->type == FOLDER_NODE)
-		condition = 2;
-	if (source_res->type == FOLDER_NODE && destination_res->type == FOLDER_NODE)
-		condition = 3;
-	// go to the parent of the search folder
-	// and take what I need out
-	Tree_node *p_source = source_res->parent;
-	Folder_content *ps_f = (Folder_content *) p_source->content;
-	List *listy = ps_f->children;
-	int index = 0;
-	List_node *nodey = listy->head;
-	while (nodey) {
-		if (nodey->info = source_res) {
-			break;
-		}
-		index++;
-		nodey = nodey->next;
-	}
-	nodey = list_remove_nth_node(listy, index);
-	// move the pointers in the right directions
-	if (!condition) {
+	if (!source_res)
 		return;
-	} else if (condition == 1) {
-		Tree_node *aux = nodey->info;
-		free(((File_content *) destination_res->content)->text);
-		((File_content *) destination_res->content)->text =
-		((File_content *) aux->content)->text;
-		free(aux->content);
-		free(aux->name);
-		free(aux);
-		free(nodey);
-	} else if (condition == 2 || condition == 3) {
-		List_node *aux = ((Folder_content *) destination_res->content)
-					->children->head;
-		nodey->next = aux;
-		((Folder_content *) destination_res->content)->children->head =
-		nodey;
+	Tree_node *node_out = source_res;
+	source_res = source_res->parent;
+	List *dir_list = ((Folder_content *) source_res->content)->children;
+	List_node *node = dir_list->head;
+	List_node *extract;
+	if (node->info == node_out) {
+		dir_list->head = node->next;
+		extract = node;
+	} else if (node->info != node_out) {
+		while (node->next->info != node_out) {
+			node = node->next;
+		}
+		extract = node->next;
+		node->next = node->next->next;
+	}
+	int the_case_scenario = 0;
+	if (node_out->type == FOLDER_NODE)
+		the_case_scenario = 1;
+	Tree_node *dest = get_to_destination_path_mv(cmd, current_node,
+					destination, the_case_scenario);
+	if (!dest)
+		return;
+	if (dest->type == FILE_NODE && node_out->type == FOLDER_NODE) {
+		printf("wtf bro\n");
+		return;
+	} else if (dest->type == FILE_NODE && node_out->type == FILE_NODE) {
+		free(((File_content *) dest->content)->text);
+		((File_content *) dest->content)->text = ((File_content *)
+									node_out->content)->text;
+		free(extract->info->content);
+		free(extract->info->name);
+		free(extract->info);
+		free(extract);
+	} else{
+		List *list = ((Folder_content *) dest->content)->children;
+		extract->next = list->head;
+		list->head = extract;
+		extract->info->parent = dest;
 	}
 }

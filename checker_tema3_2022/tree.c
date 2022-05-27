@@ -14,6 +14,12 @@
 #define CD_ERROR ("cd: no such file or directory:")
 #define TREE_ERROR ("[error opening dir]\n")
 
+char* my_strdup(char* str) {
+	char* dup_str = malloc((strlen(str) + 1) * sizeof(char));
+	memcpy(dup_str, str, strlen(str) + 1);
+	return dup_str;
+}
+
 Tree_node* create_tree_node(char* tree_node_name) {
 	Tree_node* tree_node = malloc(sizeof(*tree_node));
 	tree_node->parent = NULL;
@@ -141,7 +147,7 @@ void mkdir(Tree_node* current_node, char* folder_name) {
 /* Returns the path given by the argument `path`. */
 static Tree_node* get_to_path(Tree_node* current_node, char* path,
 							 char* print_arg1, char* print_arg2) {
-	char* path_copy = strdup(path);
+	char* path_copy = my_strdup(path);
 	char* new_dir_name = strtok(path_copy, "/");
 	while (new_dir_name != NULL) {
 		List* contents_list = ((Folder_content*) current_node->content)->children;
@@ -218,7 +224,7 @@ void tree(Tree_node* current_node, char* arg) {
 
 void pwd(Tree_node* tree_node) {
 	// initialize path name with string terminator;
-	char* path = strdup("");
+	char* path = my_strdup("");
 	// go backwards on the path starting from `tree_node`
 	while (tree_node->parent) {
 		size_t old_len = strlen(path);
@@ -378,7 +384,7 @@ void rmdir(Tree_node* current_node, char* folder_name) {
 /* Returns the element from the source path. */
 static Tree_node* get_to_source_path(char* cmd, Tree_node* current_node,
 									char* src) {
-	char* path_copy = strdup(src);
+	char* path_copy = my_strdup(src);
 	char* new_dir_name = strtok(path_copy, "/");
 	while (new_dir_name != NULL) {
 		List* contents_list = ((Folder_content*) current_node->content)->children;
@@ -429,7 +435,7 @@ static Tree_node* get_to_source_path(char* cmd, Tree_node* current_node,
 /* Returns the element from the destination path. */
 static Tree_node* get_to_destination_path(char* cmd, Tree_node* current_node,
 										 char* dest) {
-	char* path_copy = strdup(dest);
+	char* path_copy = my_strdup(dest);
 	char* new_res_name = strtok(path_copy, "/");
 	while (new_res_name != NULL) {
 		List* contents_list = ((Folder_content*) current_node->content)->children;
@@ -454,7 +460,7 @@ static Tree_node* get_to_destination_path(char* cmd, Tree_node* current_node,
 			}
 
 			// the path is valid; create the new file
-			touch(current_node, strdup(new_res_name_copy), NO_ARG);
+			touch(current_node, my_strdup(new_res_name_copy), NO_ARG);
 			contents_list = ((Folder_content*) current_node->content)->children;
 			current_node = contents_list->head->info;
 			break;
@@ -494,9 +500,9 @@ static void copy_content(Tree_node* source, Tree_node* destination) {
 
 		if (source->type == FILE_NODE) {  // copy a file to a directory
 			char* src_text = ((File_content*) source->content)->text;
-			File_content* content_copy = createFile_content(strdup(src_text));
+			File_content* content_copy = createFile_content(src_text);
 			List_node* new_node = list_add_first(dest_content->children,
-												source->type, strdup(source->name),
+												source->type, source->name,
 												content_copy);
 			new_node->info->parent = destination;
 		} else {  // copy a directory to a directory
@@ -516,7 +522,7 @@ static void copy_content(Tree_node* source, Tree_node* destination) {
 	} else {  // the destination is a file
 		File_content* dest_content = destination->content;
 		File_content* src_content = source->content;
-		dest_content->text = strdup(src_content->text);
+		dest_content->text = src_content->text;
 	}
 }
 
@@ -532,7 +538,7 @@ void cp(Tree_node* current_node, char* source, char* destination) {
 /* Returns the element from the destination path. */
 static Tree_node* get_to_destination_path_mv(char* cmd, Tree_node* current_node,
 										 char* dest, int cases) {
-	char* path_copy = strdup(dest);
+	char* path_copy = my_strdup(dest);
 	char* new_res_name = strtok(path_copy, "/");
 	while (new_res_name != NULL) {
 		List* contents_list = ((Folder_content*) current_node->content)->children;
@@ -558,12 +564,12 @@ static Tree_node* get_to_destination_path_mv(char* cmd, Tree_node* current_node,
 
 			// the path is valid; create the new file
 			if (cases == 0) {
-				touch(current_node, strdup(new_res_name_copy), NO_ARG);
+				touch(current_node, my_strdup(new_res_name_copy), NO_ARG);
 				contents_list = ((Folder_content*) current_node->content)->children;
 				current_node = contents_list->head->info;
 				break;
 			} else if (cases == 1) {
-				mkdir(current_node, strdup(new_res_name_copy));
+				mkdir(current_node, my_strdup(new_res_name_copy));
 				current_node = ((Folder_content *)current_node->content)
 								->children->head->info;
 				break;
@@ -593,48 +599,58 @@ static Tree_node* get_to_destination_path_mv(char* cmd, Tree_node* current_node,
 	return current_node;
 }
 
-void mv(Tree_node *current_node, char *source, char *destination) {
+void mv(Tree_node* current_node, char* source, char* destination) {
 	char cmd[3] = "mv";
-	Tree_node *source_res = get_to_source_path(cmd, current_node, source);
-	if (!source_res)
-		return;
-	Tree_node *node_out = source_res;
-	source_res = source_res->parent;
-	List *dir_list = ((Folder_content *) source_res->content)->children;
-	List_node *node = dir_list->head;
-	List_node *extract;
-	if (node->info == node_out) {
-		dir_list->head = node->next;
-		extract = node;
-	} else if (node->info != node_out) {
-		while (node->next->info != node_out) {
-			node = node->next;
-		}
-		extract = node->next;
-		node->next = node->next->next;
-	}
-	int the_case_scenario = 0;
-	if (node_out->type == FOLDER_NODE)
-		the_case_scenario = 1;
-	Tree_node *dest = get_to_destination_path_mv(cmd, current_node,
-					destination, the_case_scenario);
-	if (!dest)
-		return;
-	if (dest->type == FILE_NODE && node_out->type == FOLDER_NODE) {
-		printf("not allowed");
-		return;
-	} else if (dest->type == FILE_NODE && node_out->type == FILE_NODE) {
-		free(((File_content *) dest->content)->text);
-		((File_content *) dest->content)->text = ((File_content *)
-									node_out->content)->text;
-		free(extract->info->content);
-		free(extract->info->name);
-		free(extract->info);
-		free(extract);
-	} else{
-		List *list = ((Folder_content *) dest->content)->children;
-		extract->next = list->head;
-		list->head = extract;
-		extract->info->parent = dest;
-	}
+	// the exception cases are handled by the `get_to_path` functions
+    Tree_node* source_res = get_to_source_path(cmd, current_node, source);
+	Tree_node* destination_res = get_to_destination_path(cmd, current_node,
+														destination);
+	copy_content(source_res, destination_res);
+	rmrec(source_res, current_node->name);
 }
+
+// void mv(Tree_node *current_node, char *source, char *destination) {
+// 	char cmd[3] = "mv";
+// 	Tree_node *source_res = get_to_source_path(cmd, current_node, source);
+// 	if (!source_res)
+// 		return;
+// 	Tree_node *node_out = source_res;
+// 	source_res = source_res->parent;
+// 	List *dir_list = ((Folder_content *) source_res->content)->children;
+// 	List_node *node = dir_list->head;
+// 	List_node *extract;
+// 	if (node->info == node_out) {
+// 		dir_list->head = node->next;
+// 		extract = node;
+// 	} else if (node->info != node_out) {
+// 		while (node->next->info != node_out) {
+// 			node = node->next;
+// 		}
+// 		extract = node->next;
+// 		node->next = node->next->next;
+// 	}
+// 	int the_case_scenario = 0;
+// 	if (node_out->type == FOLDER_NODE)
+// 		the_case_scenario = 1;
+// 	Tree_node *dest = get_to_destination_path_mv(cmd, current_node,
+// 					destination, the_case_scenario);
+// 	if (!dest)
+// 		return;
+// 	if (dest->type == FILE_NODE && node_out->type == FOLDER_NODE) {
+// 		printf("not allowed");
+// 		return;
+// 	} else if (dest->type == FILE_NODE && node_out->type == FILE_NODE) {
+// 		free(((File_content *) dest->content)->text);
+// 		((File_content *) dest->content)->text = ((File_content *)
+// 									node_out->content)->text;
+// 		free(extract->info->content);
+// 		free(extract->info->name);
+// 		free(extract->info);
+// 		free(extract);
+// 	} else{
+// 		List *list = ((Folder_content *) dest->content)->children;
+// 		extract->next = list->head;
+// 		list->head = extract;
+// 		extract->info->parent = dest;
+// 	}
+// }

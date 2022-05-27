@@ -1,8 +1,6 @@
 #ifndef TREE_H
 #define TREE_H
 
-// #include "list.h"
-
 #define TREE_CMD_INDENT_SIZE 4
 #define NO_ARG ""
 #define PARENT_DIR ".."
@@ -36,6 +34,9 @@ struct Tree_node {
 struct File_tree {
     Tree_node* root;
 };
+
+/* Replicates the function `strdup`. */
+char* my_strdup(char* str);
 
 /* Creates a Tree_node* with name `treeNodeName`. */
 Tree_node* create_tree_node(char* treeNodeName);

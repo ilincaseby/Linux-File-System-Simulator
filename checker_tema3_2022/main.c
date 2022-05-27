@@ -32,7 +32,7 @@ Tree_node* process_command(Tree_node* current_folder,
     } else if (!strcmp(cmd[0], CD)) {
         current_folder = cd(current_folder, cmd[1]);
     } else if (!strcmp(cmd[0], MKDIR)) {
-        mkdir(current_folder, strdup(cmd[1]));
+        mkdir(current_folder, my_strdup(cmd[1]));
     } else if (!strcmp(cmd[0], RMDIR)) {
         rmdir(current_folder, cmd[1]);
     } else if (!strcmp(cmd[0], RM)) {
@@ -40,7 +40,7 @@ Tree_node* process_command(Tree_node* current_folder,
     } else if (!strcmp(cmd[0], RMREC)) {
         rmrec(current_folder, cmd[1]);
     } else if (!strcmp(cmd[0], TOUCH)) {
-        touch(current_folder, strdup(cmd[1]), strdup(cmd[2]));
+        touch(current_folder, my_strdup(cmd[1]), my_strdup(cmd[2]));
     } else if (!strcmp(cmd[0], MV)) {
         mv(current_folder, cmd[1], cmd[2]);
     } else if (!strcmp(cmd[0], CP)) {
@@ -57,7 +57,7 @@ int main() {
     char cmd[3][TOKEN_MAX_LEN];
     char *token;
 
-    File_tree file_tree = create_file_tree(strdup("root"));
+    File_tree file_tree = create_file_tree(my_strdup("root"));
     Tree_node* current_folder = file_tree.root;
 
     while (fgets(line, sizeof(line), stdin) != NULL) {

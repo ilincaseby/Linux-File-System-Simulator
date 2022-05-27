@@ -1,6 +1,6 @@
 all: build
 
-build:
+build: main.c tree.* list.*
 	gcc -std=c99 main.c tree.c list.c -o sd_fs
 
 pack:

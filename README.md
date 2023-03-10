@@ -1,4 +1,4 @@
-# Linux File System in C[^1]
+# Linux File System Simulator in C[^1]
 
 This project implements the Linux file tree system in C, along with bash commands for manipulating paths, files and directories.
 
